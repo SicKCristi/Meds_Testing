@@ -126,9 +126,9 @@
                 $_SESSION["Rol"] = $Rol;
 
                 
-                if ($rol==='Pacient') {
+                if ($Rol==='Pacient') {
                     header("Location: index_pacient.php");
-                } elseif ($rol==='Medic') {
+                } elseif ($Rol==='Medic') {
                     header("Location: index_medic.php");
                 }
                 exit;
