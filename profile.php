@@ -9,7 +9,7 @@
     include "tools/db.php";
 
     // Procesăm actualizările
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($_SERVER['REQUEST_METHOD']==='POST') {
         $camp = $_POST['camp'];
         $valoare = $_POST['valoare'];
         $id_utilizator = $_SESSION['ID_Utilizator'];
