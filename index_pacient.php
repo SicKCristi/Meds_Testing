@@ -13,7 +13,7 @@
                     </p>
                 </div>
                 <div class="col-md-6 text-center">
-                    <img src="/images/Testare_medicala.png" class="img-fluid" alt="hero" />
+                    <img src="/images/Pacienti_la_studiu_clinic.png" class="img-fluid" alt="hero" />
                 </div>
             </div>
         </div>
