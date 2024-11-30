@@ -125,7 +125,12 @@
                 $_SESSION["Adresa"] = $Adresa;
                 $_SESSION["Rol"] = $Rol;
 
-                header("location: /index.php");
+                
+                if ($rol==='Pacient') {
+                    header("Location: index_pacient.php");
+                } elseif ($rol==='Medic') {
+                    header("Location: index_medic.php");
+                }
                 exit;
             } else {
                 echo "Eroare la pregătirea interogării SQL: " . $conexiune_bd->error;
