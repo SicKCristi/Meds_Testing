@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <div class="container py-5">
-    <h2>Înscrierea ca medic pentru testări</h2>
+    <h2>Înscrierea medicului în lista de doctori</h2>
     <form method="post">
         <div class="mb-3">
             <label class="form-label">Specializarea</label>
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <div class="container py-5">
-    <h2>Înscrierea în cadrul unui studiu clinic</h2>
+    <h2>Înscrierea doctorului în cadrul unui studiu clinic</h2>
     <form method="post">
         <div class="mb-3">
             <label class="form-label">Studiul</label>
