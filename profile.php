@@ -8,18 +8,57 @@
 
     include "tools/db.php";
 
-    // Procesăm actualizările
-    if ($_SERVER['REQUEST_METHOD']==='POST') {
-        $camp = $_POST['camp'];
-        $valoare = $_POST['valoare'];
-        $id_utilizator = $_SESSION['ID_Utilizator'];
+    // Vom face o mapare între câmpurile din tabela utilizator și câmpurile din tabela pacienti
+    $campuri_pacienti = [
+        "Nume" => "Numele",
+        "Prenume" => "Prenumele",
+        "Telefon" => "Telefonul",
+        "Email" => "Emailul",
+        "Adresa" => "Adresa",
+    ];
 
-        $conexiune_bd = getDatabaseConnection();
-        $statement = $conexiune_bd->prepare("UPDATE utilizator SET $camp = ? WHERE ID_Utilizator = ?");
+    // Vom face o mapare între câmpurile din tabela utilizator și câmpurile din tabela pacienti
+    $campuri_doctor = [
+        "Nume" => "NumeDoctor",
+        "Prenume" => "PrenumeDoctor",
+        "Telefon" => "Telefonul",
+        "Email" => "Emailul",
+        "Adresa" => "Adresa",
+    ];
+
+    // Procesăm actualizările
+    if ($_SERVER['REQUEST_METHOD']==='POST'){
+        $camp=$_POST['camp'];
+        $valoare=$_POST['valoare'];
+        $id_utilizator=$_SESSION['ID_Utilizator'];
+        $rol=$_SESSION['Rol'];
+
+        $conexiune_bd=getDatabaseConnection();
+
+        // Actualizare în tabela utilizator
+        $statement=$conexiune_bd->prepare("UPDATE utilizator SET $camp=? WHERE ID_Utilizator=?");
         $statement->bind_param('si', $valoare, $id_utilizator);
         $statement->execute();
         $statement->close();
 
+        // Se va actualiza și în tabela specifică rolului
+        if($rol==='Pacient' && isset($campuri_pacienti[$camp])){
+            // Actualizarea specifică tabelei pacienti
+            $camp_pacient=$campuri_pacienti[$camp];
+            $stmt=$conexiune_bd->prepare("UPDATE pacienti SET $camp_pacient=? WHERE Emailul=?");
+            $stmt->bind_param('ss', $valoare, $_SESSION['Email']);
+            $stmt->execute();
+            $stmt->close();
+        } elseif($rol==='Medic' && isset($campuri_doctor[$camp])){
+            // Actualizarea specifică tabelei doctor
+            $camp_doctor=$capuri_doctor[$camp];
+            $stmt=$conexiune_bd->prepare("UPDATE doctor SET $camp_doctor=? WHERE Emailul=?");
+            $stmt->bind_param('ss', $valoare, $_SESSION['Email']);
+            $stmt->execute();
+            $stmt->close();
+        }
+
+        // Se va actualiza valoarea și în sesiunea curentă
         $_SESSION[$camp] = $valoare;
 
         header("location: profile.php");
