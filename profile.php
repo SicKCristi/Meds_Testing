@@ -27,40 +27,55 @@
     ];
 
     // Procesăm actualizările
-    if ($_SERVER['REQUEST_METHOD']==='POST'){
+    if($_SERVER['REQUEST_METHOD']==='POST'){
         $camp=$_POST['camp'];
         $valoare=$_POST['valoare'];
         $id_utilizator=$_SESSION['ID_Utilizator'];
         $rol=$_SESSION['Rol'];
-
+    
         $conexiune_bd=getDatabaseConnection();
-
+    
         // Actualizare în tabela utilizator
         $statement=$conexiune_bd->prepare("UPDATE utilizator SET $camp=? WHERE ID_Utilizator=?");
-        $statement->bind_param('si', $valoare, $id_utilizator);
+        $statement->bind_param('si',$valoare,$id_utilizator);
         $statement->execute();
         $statement->close();
-
-        // Se va actualiza și în tabela specifică rolului
-        if($rol==='Pacient' && isset($campuri_pacienti[$camp])){
-            // Actualizarea specifică tabelei pacienti
+    
+        // Verificăm dacă utilizatorul există în tabela specifică rolului și facem actualizarea doar dacă există
+        if($rol==='Pacient'&&isset($campuri_pacienti[$camp])){
             $camp_pacient=$campuri_pacienti[$camp];
-            $stmt=$conexiune_bd->prepare("UPDATE pacienti SET $camp_pacient=? WHERE Emailul=?");
-            $stmt->bind_param('ss', $valoare, $_SESSION['Email']);
+            $stmt=$conexiune_bd->prepare("SELECT COUNT(*) FROM pacienti WHERE Emailul=?");
+            $stmt->bind_param('s',$_SESSION['Email']);
             $stmt->execute();
+            $stmt->bind_result($exista_pacient);
+            $stmt->fetch();
             $stmt->close();
-        } elseif($rol==='Medic' && isset($campuri_doctor[$camp])){
-            // Actualizarea specifică tabelei doctor
-            $camp_doctor=$capuri_doctor[$camp];
-            $stmt=$conexiune_bd->prepare("UPDATE doctor SET $camp_doctor=? WHERE Emailul=?");
-            $stmt->bind_param('ss', $valoare, $_SESSION['Email']);
+    
+            if($exista_pacient>0){
+                $stmt=$conexiune_bd->prepare("UPDATE pacienti SET $camp_pacient=? WHERE Emailul=?");
+                $stmt->bind_param('ss',$valoare,$_SESSION['Email']);
+                $stmt->execute();
+                $stmt->close();
+            }
+        }elseif($rol==='Medic'&&isset($campuri_doctor[$camp])){
+            $camp_doctor=$campuri_doctor[$camp];
+            $stmt=$conexiune_bd->prepare("SELECT COUNT(*) FROM doctor WHERE Emailul=?");
+            $stmt->bind_param('s',$_SESSION['Email']);
             $stmt->execute();
+            $stmt->bind_result($exista_doctor);
+            $stmt->fetch();
             $stmt->close();
+    
+            if($exista_doctor>0){
+                $stmt=$conexiune_bd->prepare("UPDATE doctor SET $camp_doctor=? WHERE Emailul=?");
+                $stmt->bind_param('ss',$valoare,$_SESSION['Email']);
+                $stmt->execute();
+                $stmt->close();
+            }
         }
-
-        // Se va actualiza valoarea și în sesiunea curentă
-        $_SESSION[$camp] = $valoare;
-
+    
+        $_SESSION[$camp]=$valoare;
+    
         header("location: profile.php");
         exit;
     }
