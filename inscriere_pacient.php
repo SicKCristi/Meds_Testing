@@ -1,12 +1,31 @@
 <?php
 include "layout/header.php";
 
-if($_SERVER['REQUEST_METHOD']==='POST') {
+if($_SERVER['REQUEST_METHOD']==='POST'){
     include "tools/db.php";
+    include "functii_stergere_pacient.php";
 
     $conexiune_bd=getDatabaseConnection();
 
-    if(isset($_POST['inscriere_pacient'])) {
+    if(isset($_POST['delete_testare_pacient'])){
+        $ID_Testare=$_POST['ID_Testare'] ?? null;
+        if($ID_Testare){
+            sterge_testare_selectata($conexiune_bd,$ID_Testare);
+        }
+    }
+
+    if(isset($_POST['delete_medicament_pacient'])){
+        $ID_Medicament=$_POST['ID_Medicament'] ?? null;
+        if($ID_Medicament){
+            sterge_medicament_selectat($conexiune_bd, $ID_Medicament);
+        }
+    }
+
+    if(isset($_POST['delete_pacient'])){
+        sterge_pacient_din_pacienti($conexiune_bd);
+    }
+
+    if(isset($_POST['inscriere_pacient'])){
         // Formularul pentru inscrierea pacientului in tabela pacienti
         $DataNasterii=$_POST['DataNasterii'];
         $Sex=$_POST['Sex'];
@@ -25,9 +44,9 @@ if($_SERVER['REQUEST_METHOD']==='POST') {
         $stmt->fetch();
         $stmt->close();
 
-        if($count>0) {
+        if($count>0){
             echo "<div class='alert alert-danger'>Ești deja înscris ca pacient pentru testare!</div>";
-        } else {
+        } else{
             $query="SELECT IFNULL(MAX(ID_Pacient),0)+1 AS next_id FROM pacienti";
             $result=$conexiune_bd->query($query);
             $row=$result->fetch_assoc();
@@ -152,7 +171,22 @@ if($_SERVER['REQUEST_METHOD']==='POST') {
             }
             $stmt->close();
         }
-    }    
+    }
+
+    // Ștergere pacient din pacient
+    if(isset($_POST['delete_pacient'])){
+        sterge_pacient_din_pacienti($conexiune_bd);
+    }
+
+    // Ștergere din tabela testare_pacient
+    if(isset($_POST['delete_testare_pacient'])){
+        stergere_testare_pacient($conexiune_bd);
+    }
+
+    // Ștergere din tabela consultație
+    if(isset($_POST['delete_medicament_pacient'])){
+        stergere_medicament_pacient($conexiune_bd);
+    }
 }
 ?>
 
@@ -176,6 +210,9 @@ if($_SERVER['REQUEST_METHOD']==='POST') {
 
         <button type="submit" class="btn btn-success">Înscrie-te!</button>
     </form>
+    <form method="post">
+        <button type="submit" name="delete_pacient" class="btn btn-danger mt-2">Șterge înregistrarea</button>
+    </form>
 </div>
 
 <div class="container py-5">
@@ -196,6 +233,9 @@ if($_SERVER['REQUEST_METHOD']==='POST') {
         </div>
         <button type="submit" class="btn btn-success">Înscrie-te!</button>
     </form>
+    <form method="post">
+        <button type="submit" name="delete_testare_pacient" class="btn btn-danger mt-2">Șterge înregistrarea</button>
+    </form>
 </div>
 
 <div class="container py-5">
@@ -215,6 +255,9 @@ if($_SERVER['REQUEST_METHOD']==='POST') {
             <input type="date" class="form-control" name="DataFinalizare" required>
         </div>
         <button type="submit" class="btn btn-success">Înscrie-te!</button>
+    </form>
+    <form method="post">
+        <button type="submit" name="delete_medicament_pacient" class="btn btn-danger mt-2">Șterge înregistrarea</button>
     </form>
 </div>
 
