@@ -1,10 +1,30 @@
 <?php
 include "layout/header.php";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if($_SERVER['REQUEST_METHOD']==='POST'){
     include "tools/db.php";
+    include "functii_stergere_doctor.php";
 
     $conexiune_bd = getDatabaseConnection();
+
+    // Gestionarea ștergerii
+    if (isset($_POST['delete_consultatie'])) {
+        $ID_Consultatie = $_POST['ID_Consultatie'] ?? null;
+        if ($ID_Consultatie) {
+            sterge_consultatie_selectata($conexiune_bd, $ID_Consultatie);
+        }
+    }
+
+    if (isset($_POST['delete_studiu_doctor'])) {
+        $ID_Studiu = $_POST['ID_Studiu'] ?? null;
+        if ($ID_Studiu) {
+            sterge_studiu_selectat($conexiune_bd, $ID_Studiu);
+        }
+    }
+
+    if (isset($_POST['delete_doctor'])) {
+        sterge_doctor_din_doctor($conexiune_bd);
+    }
 
     // Vom înscrie medicul în tabela doctor
     if (isset($_POST['Specializarea']) && isset($_POST['Spitalul'])) {
@@ -140,6 +160,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+
+    // Ștergere doctor din tabela doctor
+    if(isset($_POST['delete_doctor'])){
+        sterge_doctor_din_doctor($conexiune_bd);
+    }
+
+    // Ștergere din tabela studiu_doctor
+    if(isset($_POST['delete_studiu_doctor'])){
+        stergere_doctor_studiu($conexiune_bd);
+    }
+
+    // Ștergere din tabela consultație
+    if(isset($_POST['delete_consultatie'])){
+        stergere_consultatie($conexiune_bd);
+    }
 }
 ?>
 
@@ -156,6 +191,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <button type="submit" class="btn btn-success">Înscrie-te!</button>
     </form>
+    <form method="post">
+        <button type="submit" name="delete_doctor" class="btn btn-danger mt-2">Șterge înregistrarea</button>
+    </form>
 </div>
 
 <div class="container py-5">
@@ -170,6 +208,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="text" class="form-control" name="Rolul" required>
         </div>
         <button type="submit" class="btn btn-success">Înscrie-te!</button>
+    </form>
+    <form method="post">
+        <button type="submit" name="delete_studiu_doctor" class="btn btn-danger mt-2">Șterge înregistrarea</button>
     </form>
 </div>
 
@@ -190,6 +231,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <button type="submit" class="btn btn-success">Înscrie-te!</button>
     </form>
+    <form method="post">
+        <button type="submit" name="delete_consultatie" class="btn btn-danger mt-2">Șterge înregistrarea</button>
+    </form>
 </div>
+
 
 <?php include "layout/footer.php"; ?>
