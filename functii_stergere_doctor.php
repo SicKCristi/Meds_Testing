@@ -72,6 +72,7 @@ function sterge_studiu_selectat($conexiune_bd, $ID_Studiu) {
         echo "<div class='alert alert-danger'>Doctorul nu a fost găsit!</div>";
     }
 }
+
 function sterge_doctor_din_doctor($conexiune_bd) {
     $ID_Doctor=obtine_id_doctor($conexiune_bd);
 
