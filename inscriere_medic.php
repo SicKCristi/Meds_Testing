@@ -17,7 +17,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 
     if(isset($_POST['delete_studiu_doctor'])){
         $ID_Studiu=$_POST['ID_Studiu'] ?? null;
-        if ($ID_Studiu){
+        if($ID_Studiu){
             sterge_studiu_selectat($conexiune_bd, $ID_Studiu);
         }
     }
