@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-$autentificat = false;
-if (isset($_SESSION["Email"])) {
-    $autentificat = true;
+$autentificat=false;
+if(isset($_SESSION["Email"])){
+    $autentificat=true;
 }
 ?>
 
@@ -21,9 +21,9 @@ if (isset($_SESSION["Email"])) {
   <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom shadow-sm">
     <div class="container">
       <a class="navbar-brand" href="<?php 
-          if ($autentificat) {
-              echo ($_SESSION["Rol"] === 'Pacient') ? 'index_pacient.php' : 'index_medic.php';
-          } else {
+          if($autentificat){
+              echo($_SESSION["Rol"]==='Pacient') ? 'index_pacient.php' : 'index_medic.php';
+          } else{
               echo 'index.php';
           }
       ?>">
@@ -35,11 +35,11 @@ if (isset($_SESSION["Email"])) {
       </button>
       
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <?php if ($autentificat) { ?>
+        <?php if($autentificat){ ?>
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <a class="nav-link text-dark" href="<?php 
-                echo ($_SESSION["Rol"] === 'Pacient') ? 'index_pacient.php' : 'index_medic.php';
+                echo ($_SESSION["Rol"]==='Pacient') ? 'index_pacient.php' : 'index_medic.php';
             ?>">Home</a>
           </li>
         </ul>
@@ -50,7 +50,7 @@ if (isset($_SESSION["Email"])) {
                 <?= $_SESSION["Rol"] ?? 'Utilizator'; ?>
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/profile.php">Profile</a></li>
+              <li><a class="dropdown-item" href="/profile.php">Profil</a></li>
               <li>
                   <hr class="dropdown-divider">
               </li>
@@ -59,13 +59,15 @@ if (isset($_SESSION["Email"])) {
           </li>
         </ul>
 
-        <?php if ($_SESSION["Rol"] === 'Pacient') { ?>
-          <a href="/inscriere_pacient.php" class="btn btn-outline-success ms-2">Înscriere Pacient la Testare</a>
-        <?php } elseif ($_SESSION["Rol"] === 'Medic') { ?>
-          <a href="/inscriere_medic.php" class="btn btn-outline-success ms-2">Înscriere Medic pentru Testare</a>
+        <?php if($_SESSION["Rol"]==='Pacient') { ?>
+          <a href="/inscriere_pacient.php" class="btn btn-outline-success ms-2">Înscriere-te ca pacient la testări!</a>
+        <?php } elseif($_SESSION["Rol"]==='Medic') { ?>
+          <a href="/inscriere_medic.php" class="btn btn-outline-success ms-2">Înscrie-te ca medic pentru testări!</a>
+          <a href="/adaugare_categorie.php" class="btn btn-outline-primary ms-2">Adaugă o nouă categorie!</a>
+          <a href="/adaugare_medicament.php" class="btn btn-outline-primary ms-2">Adaugă un nou medicament!</a>
         <?php } ?>
 
-        <?php } else { ?>
+        <?php } else{ ?>
         <div class="ms-auto">
           <a href="/register.php" class="btn btn-outline-primary me-2">Register</a>
           <a href="/login.php" class="btn btn-outline-primary me-2">Login</a>
