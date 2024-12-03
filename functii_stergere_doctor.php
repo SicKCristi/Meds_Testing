@@ -1,4 +1,8 @@
 <?php
+
+echo '<link rel="stylesheet" type="text/css" href="stilizare_butoane.css">';
+echo '<script src="functionare_butoane.js"></script>';
+
 function obtine_id_doctor($conexiune_bd) {
     $ID_Doctor=null;
 
@@ -113,22 +117,21 @@ function stergere_doctor_studiu($conexiune_bd) {
         $result = $stmt->get_result();
 
         if($result->num_rows>0){
-            echo "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalStudiuDoctor'>Șterge studiu</button>";
-            echo "<div class='modal fade' id='modalStudiuDoctor' tabindex='-1' aria-labelledby='modalStudiuDoctorLabel' aria-hidden='true'>";
+            echo "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalGeneral'>Șterge studiu</button>";
+            echo "<div class='modal fade' id='modalGeneral' tabindex='-1' aria-hidden='true'>";
             echo "<div class='modal-dialog'><div class='modal-content'>";
-            echo "<div class='modal-header'><h5 class='modal-title' id='modalStudiuDoctorLabel'>Alege studiul de șters</h5>";
+            echo "<div class='modal-header'><h5 class='modal-title'>Alege studiul de șters</h5>";
             echo "<button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button></div>";
             echo "<div class='modal-body'><form method='POST'>";
 
             while($row=$result->fetch_assoc()){
-                echo "<label><input type='radio' name='ID_Studiu' value='{$row['ID_Studiu']}'> Studiu ID: {$row['ID_Studiu']}</label><br>";
+                echo "<label class='radio-label'><input type='radio' name='ID_Studiu' value='{$row['ID_Studiu']}' class='radio-select'> Studiu ID: {$row['ID_Studiu']}</label><br>";
             }
 
-            echo "<input type='hidden' name='ID_Doctor' value='$ID_Doctor'>";
-            echo "<button type='submit' class='btn btn-danger mt-3' name='delete_studiu_doctor'>Șterge</button>";
+            echo "<button type='submit' class='btn btn-danger btn-disabled mt-3' name='delete_studiu_doctor' disabled>Șterge</button>";
             echo "</form></div></div></div></div>";
         } else{
-            echo "<div class='alert alert-warning'>Nu mai există studii asociate acestui doctor!</div>";
+            echo "<div class='alert alert-warning'>Nu există studii asociate acestui doctor!</div>";
         }
         $stmt->close();
     } else{
@@ -146,18 +149,18 @@ function stergere_consultatie($conexiune_bd) {
         $result=$stmt->get_result();
 
         if($result->num_rows>0){
-            echo "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalConsultatie'>Șterge consultație</button>";
-            echo "<div class='modal fade' id='modalConsultatie' tabindex='-1' aria-labelledby='modalConsultatieLabel' aria-hidden='true'>";
+            echo "<button type='button' class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#modalGeneral'>Șterge consultație</button>";
+            echo "<div class='modal fade' id='modalGeneral' tabindex='-1' aria-hidden='true'>";
             echo "<div class='modal-dialog'><div class='modal-content'>";
-            echo "<div class='modal-header'><h5 class='modal-title' id='modalConsultatieLabel'>Alege consultația de șters</h5>";
+            echo "<div class='modal-header'><h5 class='modal-title'>Alege consultația de șters</h5>";
             echo "<button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button></div>";
             echo "<div class='modal-body'><form method='POST'>";
 
             while($row=$result->fetch_assoc()){
-                echo "<label><input type='radio' name='ID_Consultatie' value='{$row['ID_Consultatie']}'> Consultație ID: {$row['ID_Consultatie']}</label><br>";
+                echo "<label class='radio-label'><input type='radio' name='ID_Consultatie' value='{$row['ID_Consultatie']}' class='radio-select'> Consultație ID: {$row['ID_Consultatie']}</label><br>";
             }
 
-            echo "<button type='submit' class='btn btn-danger mt-3' name='delete_consultatie'>Șterge</button>";
+            echo "<button type='submit' class='btn btn-danger btn-disabled mt-3' name='delete_consultatie' disabled>Șterge</button>";
             echo "</form></div></div></div></div>";
         } else{
             echo "<div class='alert alert-warning'>Nu există consultații asociate acestui doctor!</div>";

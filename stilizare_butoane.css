@@ -1,0 +1,38 @@
+.radio-label{
+    display: block;
+    margin-bottom: 5px;
+}
+
+.radio-select{
+    margin-right: 10px;
+}
+
+.btn-disabled{
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.modal-header{
+    background-color: #007bff;
+    color: #fff;
+}
+
+.modal-content{
+    border-radius: 8px;
+}
+
+.btn-primary, .btn-danger{
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link img{
+    width: 40px; 
+    height: 40px; 
+    transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.navbar-nav .nav-link img:hover{
+    transform: scale(1.2); 
+    width: 48px; 
+    height: 48px; 
+}

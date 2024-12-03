@@ -2,7 +2,7 @@
         <div class="container">
             <div class="row">
                 <div class="col text-center">
-                    <img clas="mb-2" src="/images/logo.png" alt="" width="24" height="24">
+                    <img clas="mb-2" src="/images/Logo.jpeg" alt="" width="24" height="24">
                     <small class="d-block text-muted">&copy; 2024-<?= date("Y") ?></small>
                 </div>
             </div>

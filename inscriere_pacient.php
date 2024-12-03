@@ -173,11 +173,6 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
         }
     }
 
-    // Ștergere pacient din pacient
-    if(isset($_POST['delete_pacient'])){
-        sterge_pacient_din_pacienti($conexiune_bd);
-    }
-
     // Ștergere din tabela testare_pacient
     if(isset($_POST['delete_testare_pacient'])){
         stergere_testare_pacient($conexiune_bd);
@@ -186,6 +181,11 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     // Ștergere din tabela consultație
     if(isset($_POST['delete_medicament_pacient'])){
         stergere_medicament_pacient($conexiune_bd);
+    }
+
+    // Ștergere pacient din pacient
+    if(isset($_POST['delete_pacient'])){
+        sterge_pacient_din_pacienti($conexiune_bd);
     }
 }
 ?>
