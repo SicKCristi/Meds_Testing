@@ -15,6 +15,7 @@ if(isset($_SESSION["Email"])){
     <title>Evidenta Testare</title>
     <link rel="icon" href="/images/Logo.jpeg">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoA6H36OyoBpaO96zrpO9GHqJZzPUF0CZR9QQ0LRn0o9b4k" crossorigin="anonymous"></script>
   </head>
   <body>
 
@@ -22,7 +23,7 @@ if(isset($_SESSION["Email"])){
     <div class="container">
       <a class="navbar-brand" href="<?php 
           if($autentificat){
-              echo($_SESSION["Rol"]==='Pacient') ? 'index_pacient.php' : 'index_medic.php';
+              echo ($_SESSION["Rol"]==='Pacient') ? 'index_pacient.php' : 'index_medic.php';
           } else{
               echo 'index.php';
           }
@@ -40,40 +41,58 @@ if(isset($_SESSION["Email"])){
             <li class="nav-item">
               <a class="nav-link" href="<?php 
                 echo ($_SESSION["Rol"]==='Pacient') ? 'index_pacient.php' : 'index_medic.php';
-            ?>" title="HOME">
+              ?>" title="HOME">
                 <img src="/images/Home.png" alt="Home" style="width: 24px; height: 24px;">
               </a>
             </li>
-        </ul>
+          </ul>
 
-        <ul class="navbar-nav">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <?= $_SESSION["Rol"] ?? 'Utilizator'; ?>
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/profile.php">Profil</a></li>
-              <li>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/profile.php">Profil</a></li>
+                <li>
                   <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="/logout.php">Logout</a></li>
-            </ul>
-          </li>
-        </ul>
+                </li>
+                <li><a class="dropdown-item" href="/logout.php">Logout</a></li>
+              </ul>
+            </li>
+          </ul>
 
-        <?php if($_SESSION["Rol"]==='Pacient') { ?>
-          <a href="/inscriere_pacient.php" class="btn btn-outline-success ms-2">Înscriere-te ca pacient la testări!</a>
-        <?php } elseif($_SESSION["Rol"]==='Medic') { ?>
-          <a href="/inscriere_medic.php" class="btn btn-outline-success ms-2">Înscrie-te ca medic pentru testări!</a>
-          <a href="/adaugare_categorie.php" class="btn btn-outline-primary ms-2">Adaugă o nouă categorie!</a>
-          <a href="/adaugare_medicament.php" class="btn btn-outline-primary ms-2">Adaugă un nou medicament!</a>
-        <?php } ?>
+          <?php if($_SESSION["Rol"]==='Pacient'){ ?>
+            <div class="nav-item dropdown ms-2">
+              <a class="btn btn-outline-success dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                 Acțiuni Pacient
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/inscriere_pacient.php">Înrolează-te ca pacient</a></li>
+                <li><a class="dropdown-item" href="/inscriere_testare.php">Adaugă o testare</a></li>
+                <li><a class="dropdown-item" href="/inscriere_testare_medicament.php">Adaugă un medicament testat</a></li>
+              </ul>
+          </div>
+          <?php } elseif($_SESSION["Rol"]==='Medic'){ ?>
+            <div class="nav-item dropdown ms-2">
+              <a class="btn btn-outline-success dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Acțiuni Medic
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/inscriere_medic.php">Alătură-te medicilor din testări</a></li>
+                <li><a class="dropdown-item" href="/inrolare_medic_la_studiu.php">Înrolează-te la studii</a></li>
+                <li><a class="dropdown-item" href="/adaugare_consultatie.php">Adaugă o nouă consultație</a></li>
+                <li><a class="dropdown-item" href="/adaugare_categorie.php">Adaugă o nouă categorie</a></li>
+                <li><a class="dropdown-item" href="/adaugare_medicament.php">Adaugă un nou medicament</a></li>
+              </ul>
+            </div>
+          <?php } ?>
 
         <?php } else{ ?>
-        <div class="ms-auto">
-          <a href="/register.php" class="btn btn-outline-primary me-2">Register</a>
-          <a href="/login.php" class="btn btn-outline-primary me-2">Login</a>
-        </div>
+          <div class="ms-auto">
+            <a href="/register.php" class="btn btn-outline-primary me-2">Register</a>
+            <a href="/login.php" class="btn btn-outline-primary me-2">Login</a>
+          </div>
         <?php } ?>
       </div>
     </div>
