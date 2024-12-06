@@ -2,48 +2,45 @@
    include "layout/header.php";
    
    if(isset($_SESSION["Email"])){
-        if ($user['rol']==='Pacient') {
+        if ($user['rol']==='Pacient'){
             header("Location: index_pacient.php");
-        } elseif ($user['rol']==='Medic') {
+        } elseif($user['rol']==='Medic'){
         header("Location: index_medic.php");
     }
     exit;
    }
 
-   $Email = "";
-   $eroare = "";
+   $Email="";
+   $eroare="";
 
-   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $Email = $_POST['Email'];
-    $Parola = $_POST['Parola'];
+   if($_SERVER['REQUEST_METHOD']=='POST'){
+    $Email=$_POST['Email'];
+    $Parola=$_POST['Parola'];
 
-    if (empty($Email) || empty($Parola)) {
-        $eroare = "Emailul și parola sunt necesare!";
-    } else {
+    if(empty($Email) || empty($Parola)){
+        $eroare="Emailul și parola sunt necesare!";
+    } else{
         include "tools/db.php";
-        $conexiune_bd = getDatabaseConnection();
-        $statement = $conexiune_bd->prepare(
-            "SELECT ID_Utilizator, Nume, Prenume, Telefon, Adresa, Rol, Parola FROM utilizator WHERE email=?"
-        );
-
+        $conexiune_bd=getDatabaseConnection();
+        $statement=$conexiune_bd->prepare("SELECT ID_Utilizator, Nume, Prenume, Telefon, Adresa, Rol, Parola FROM utilizator WHERE email=?");
         $statement->bind_param('s', $Email);
         $statement->execute();
 
         $statement->bind_result($ID_Utilizator, $Nume, $Prenume, $Telefon, $Adresa, $Rol, $Parola_stocata);
 
-        if ($statement->fetch()) {
-            if (password_verify($Parola, $Parola_stocata)) {
-                $_SESSION["ID_Utilizator"] = $ID_Utilizator;
-                $_SESSION["Nume"] = $Nume;
-                $_SESSION["Prenume"] = $Prenume;
-                $_SESSION["Email"] = $Email;
-                $_SESSION["Telefon"] = $Telefon;
-                $_SESSION["Adresa"] = $Adresa;
-                $_SESSION["Rol"] = $Rol;
+        if($statement->fetch()){
+            if(password_verify($Parola, $Parola_stocata)){
+                $_SESSION["ID_Utilizator"]=$ID_Utilizator;
+                $_SESSION["Nume"]=$Nume;
+                $_SESSION["Prenume"]=$Prenume;
+                $_SESSION["Email"]=$Email;
+                $_SESSION["Telefon"]=$Telefon;
+                $_SESSION["Adresa"]=$Adresa;
+                $_SESSION["Rol"]=$Rol;
 
-                if ($Rol === 'Pacient') {
+                if($Rol==='Pacient'){
                     header("Location: index_pacient.php");
-                } elseif ($Rol === 'Medic') {
+                } elseif($Rol==='Medic'){
                     header("Location: index_medic.php");
                 }
                 exit;
@@ -51,7 +48,7 @@
         }
 
         $statement->close();
-        $eroare = "Email sau parolă invalidă!";
+        $eroare="Email sau parolă invalidă!";
     }
 }
 ?>
@@ -81,16 +78,17 @@
                 <input class="form-control" type="password" name="Parola" />
             </div>
 
-            <div class="row mb-3">
-                <div class="cold d-grip">
-                    <button type="sumbit" class="btn btn-primary">Conectare</button>
-                </div>
-                <div class="cold d-grip">
-                    <a href="index.php" class="btn btn-outline-primary">Anulare</a>
-                </div>
+            <div class="d-flex justify-content-between mb-3">
+                <button type="submit" class="btn btn-primary w-45">Conectare</button>
+                <a href="index.php" class="btn btn-outline-primary w-45">Anulare</a>
             </div>
 
         </form>
+
+        <div class="text-center mt-3">
+            <p>Nu aveți un cont deja?</p>
+            <a href="register.php" class="btn btn-success">Înregistrează-te</a>
+        </div>
 
     </div>
 </div>

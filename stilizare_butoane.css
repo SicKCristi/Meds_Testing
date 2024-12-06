@@ -1,10 +1,10 @@
 .radio-label{
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 0.3em;
 }
 
 .radio-select{
-    margin-right: 10px;
+    margin-right: 0.6em;
 }
 
 .btn-disabled{
@@ -18,7 +18,7 @@
 }
 
 .modal-content{
-    border-radius: 8px;
+    border-radius: 0.5rem;
 }
 
 .btn-primary, .btn-danger{
@@ -26,13 +26,13 @@
 }
 
 .navbar-nav .nav-link img{
-    width: 40px; 
-    height: 40px; 
+    width: 2.5rem; 
+    height: 2.5rem;
     transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
 }
 
 .navbar-nav .nav-link img:hover{
-    transform: scale(1.2); 
-    width: 48px; 
-    height: 48px; 
+    transform: scale(1.2);
+    width: 3rem; 
+    height: 3rem;
 }
