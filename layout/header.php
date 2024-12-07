@@ -16,6 +16,7 @@ if(isset($_SESSION["Email"])){
     <link rel="icon" href="/images/Logo.jpeg">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoA6H36OyoBpaO96zrpO9GHqJZzPUF0CZR9QQ0LRn0o9b4k" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
   </head>
   <body>
 
@@ -23,7 +24,7 @@ if(isset($_SESSION["Email"])){
     <div class="container">
       <a class="navbar-brand" href="<?php 
           if($autentificat){
-              echo ($_SESSION["Rol"]==='Pacient') ? 'index_pacient.php' : 'index_medic.php';
+              echo($_SESSION["Rol"]==='Pacient') ? 'index_pacient.php' : 'index_medic.php';
           } else{
               echo 'index.php';
           }
@@ -40,9 +41,9 @@ if(isset($_SESSION["Email"])){
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link" href="<?php 
-                echo ($_SESSION["Rol"]==='Pacient') ? 'index_pacient.php' : 'index_medic.php';
+                echo($_SESSION["Rol"]==='Pacient') ? 'index_pacient.php' : 'index_medic.php';
               ?>" title="HOME">
-                <img src="/images/Home.png" alt="Home" style="width: 24px; height: 24px;">
+                <i class="fa-solid fa-house fa-lg" style="color: #08618d;"></i>
               </a>
             </li>
           </ul>
