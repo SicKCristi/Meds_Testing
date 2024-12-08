@@ -162,6 +162,11 @@
     <?php else: ?>
         <h3 class="text-center mt-5">Nu există consultații efectuate!</h3>
     <?php endif; ?>
+
+    <!-- Butonul care face legătura cu pagina vizualizare_studii.php -->
+    <div class="mt-4">
+        <a href="vizualizare_studii.php" class="btn btn-primary">Vizualizează Studiile</a>
+    </div>
 </div>
 
 <?php 

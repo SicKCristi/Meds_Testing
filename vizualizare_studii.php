@@ -148,6 +148,11 @@
     <?php else: ?>
         <h3 class="text-center mt-5">Nu participați la niciun studiu!</h3>
     <?php endif; ?>
+
+    <!-- Butonul care face legătura cu pagina vizualizare_consultatii.php -->
+    <div class="mt-4">
+        <a href="vizualizare_consultatii.php" class="btn btn-primary">Vizualizează Consultațiile</a>
+    </div>
 </div>
 
 <?php 
