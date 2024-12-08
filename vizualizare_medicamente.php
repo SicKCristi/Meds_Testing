@@ -1,9 +1,45 @@
 <?php
-include "layout/header.php";
-include "tools/db.php";
+    include "layout/header.php";
+    include "tools/db.php";
 
     $conexiune_bd=getDatabaseConnection();
     $Email_utilizator=$_SESSION['Email'];
+
+    $alert_message=null;
+    $alert_class="";
+
+    // Obținem ID-ul pacientului asociat utilizatorului
+    $query_pacient="SELECT ID_Pacient FROM pacienti WHERE Emailul=?";
+    $stmt_pacient=$conexiune_bd->prepare($query_pacient);
+    $stmt_pacient->bind_param('s', $Email_utilizator);
+    $stmt_pacient->execute();
+    $rezultat_pacient=$stmt_pacient->get_result();
+    $pacient=$rezultat_pacient->fetch_assoc();
+    $stmt_pacient->close();
+
+    $ID_Pacient=$pacient['ID_Pacient'] ?? null;
+
+    if(!$ID_Pacient){
+        die("Pacientul nu a fost găsit.");
+    }
+
+    // Funcția pentru ștergerea înregistrării specificate
+    if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['delete_medicament_pacient'])){
+        $ID_Medicament=$_POST['ID_Medicament'] ?? null;
+        if($ID_Medicament){
+            $deleteQuery="DELETE FROM pacient_medicament WHERE ID_Medicament = ? AND ID_Pacient = ?";
+            $stmt_delete=$conexiune_bd->prepare($deleteQuery);
+            $stmt_delete->bind_param('ii', $ID_Medicament, $ID_Pacient);
+            if($stmt_delete->execute()){
+                $alert_message="Înregistrarea a fost ștearsă cu succes!";
+                $alert_class="alert-success";
+            } else{
+                $alert_message="Eroare la ștergere!";
+                $alert_class="alert-danger";
+            }
+            $stmt_delete->close();
+        }
+    }
 
     // Interogarea 1, făcută cu tabelele utilizator, pacienti și testare_pacient
     $query1="
@@ -42,15 +78,22 @@ include "tools/db.php";
     $data2=[];
     while($rand=$rezultat2->fetch_assoc()){
         // Indexare se va face după ID_Medicament
-    $data2[$rand['ID_Medicament']]=$rand; 
+        $data2[$rand['ID_Medicament']]=$rand;
     }
 
     $rezultat2->free();
 ?>
 
 <div class="container py-5">
-    <h2>Medicamentele pe care le testați</h2>
+    <!-- Mesajul de alertă -->
+    <?php if($alert_message): ?>
+        <div class="alert <?= $alert_class ?> alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($alert_message) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
 
+    <h2>Medicamentele pe care le testați</h2>
     <?php if(empty($data1)) : ?>
         <p class="text-center fs-4">Nu participați la nicio testare!</p>
     <?php else : ?>
@@ -104,14 +147,14 @@ include "tools/db.php";
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Închide"></button>
                                         </div>
                                         <div class="modal-body">
-                                            Acțiunea va șterge această înregistrare.
+                                            Ești sigur că vrei să ștergi această înregistrare?
                                         </div>
                                         <div class="modal-footer">
                                             <form method="POST" action="">
                                                 <input type="hidden" name="ID_Medicament" value="<?= $entry['ID_Medicament']; ?>">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anulează</button>
                                                 <button type="submit" class="btn btn-danger" name="delete_medicament_pacient">Confirmă</button>
                                             </form>
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anulează</button>
                                         </div>
                                     </div>
                                 </div>
@@ -130,20 +173,5 @@ include "tools/db.php";
 </div>
 
 <?php
-    // Funcția de ștergere pentru înregistrarea din tabela pacient_medicament
-    if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['delete_medicament_pacient'])){
-        $ID_Medicament=$_POST['ID_Medicament'];
-
-        $deleteQuery="DELETE FROM pacient_medicament WHERE ID_Medicament = ? AND ID_Pacient = ?";
-        $stmtDelete=$conexiune_bd->prepare($deleteQuery);
-        $stmtDelete->bind_param('ii', $ID_Medicament, $data1[0]['ID_Pacient']); // Folosim ID_Pacient din prima interogare
-        if($stmtDelete->execute()){
-        echo "<script>alert('Înregistrarea a fost ștearsă!'); window.location.reload();</script>";
-    } else{
-        echo "<script>alert('Eroare la ștergere!');</script>";
-    }
-    $stmtDelete->close();
-}
-
-include "layout/footer.php";
+    include "layout/footer.php";
 ?>

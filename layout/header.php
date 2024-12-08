@@ -72,6 +72,8 @@ if(isset($_SESSION["Email"])){
                 <li><a class="dropdown-item" href="/inscriere_pacient.php">Înrolează-te ca pacient</a></li>
                 <li><a class="dropdown-item" href="/inscriere_testare.php">Adaugă o testare</a></li>
                 <li><a class="dropdown-item" href="/inscriere_testare_medicament.php">Adaugă un medicament testat</a></li>
+                <li><a class="dropdown-item" href="/vizualizare_testari.php">Vezi testările tale</a></li>
+                <li><a class="dropdown-item" href="/vizualizare_medicamente.php">Vezi medicamentele testate</a></li>
               </ul>
           </div>
           <?php } elseif($_SESSION["Rol"]==='Medic'){ ?>
@@ -85,6 +87,8 @@ if(isset($_SESSION["Email"])){
                 <li><a class="dropdown-item" href="/adaugare_consultatie.php">Adaugă o nouă consultație</a></li>
                 <li><a class="dropdown-item" href="/adaugare_categorie.php">Adaugă o nouă categorie</a></li>
                 <li><a class="dropdown-item" href="/adaugare_medicament.php">Adaugă un nou medicament</a></li>
+                <li><a class="dropdown-item" href="/vizualizare_consultatii.php">Vezi consultațiile tale</a></li>
+                <li><a class="dropdown-item" href="/vizualizare_studii.php">Vezi studiile tale</a></li>
               </ul>
             </div>
           <?php } ?>

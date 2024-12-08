@@ -5,6 +5,27 @@
     $conexiune_bd=getDatabaseConnection();
     $Email_utilizator=$_SESSION['Email'] ?? null;
 
+    $alert_message=null;
+    $alert_class='';
+
+    // Funcția pentru ștergerea înregistrării specificate
+    if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['delete_testare'])){
+        $ID_Testare=$_POST['ID_Testare'] ?? null;
+
+        if($ID_Testare){
+            $stmt_delete=$conexiune_bd->prepare("DELETE FROM testare_pacient WHERE ID_Testare = ?");
+            $stmt_delete->bind_param('i', $ID_Testare);
+            if($stmt_delete->execute()){
+                $alert_message="Înregistrarea cu ID $ID_Testare a fost ștearsă cu succes!";
+                $alert_class="alert-success";
+            } else{
+                $alert_message="Eroare la ștergere!";
+                $alert_class="alert-danger";
+            }
+            $stmt_delete->close();
+        }
+    }
+
     // Interogarea 1, între tabelele utilizator, pacient și testare_pacient
     $query_testari="
         SELECT 
@@ -44,7 +65,7 @@
         WHERE TP.ID_Testare IN (" . implode(',', array_keys($testari)) . ")";
     $stmt_medici=$conexiune_bd->prepare($query_medici);
     $stmt_medici->execute();
-    $rezultat_medici = $stmt_medici->get_result();
+    $rezultat_medici=$stmt_medici->get_result();
 
     $medici_testari=[];
     while($rand=$rezultat_medici->fetch_assoc()){
@@ -54,9 +75,16 @@
 ?>
 
 <div class="container py-5">
-    <h2>Testările la care dumneavoastră participați</h2>
+    <!-- Mesajul de alertă -->
+    <?php if($alert_message): ?>
+        <div class="alert <?= $alert_class ?> alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($alert_message) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
 
-    <?php if (!empty($testari)): ?>
+    <h2>Testările la care dumneavoastră participați</h2>
+    <?php if(!empty($testari)): ?>
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
@@ -111,6 +139,7 @@
                                                 <div class="modal-footer">
                                                     <form method="POST">
                                                         <input type="hidden" name="ID_Testare" value="<?= $testare['ID_Testare'] ?>">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anulează</button>
                                                         <button type="submit" name="delete_testare" class="btn btn-danger">Confirmă</button>
                                                     </form>
                                                 </div>
@@ -134,23 +163,6 @@
     </div>
 </div>
 
-<?php
-    // Funcția pentru ștergerea interogării specifice
-    if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['delete_testare'])){
-        $ID_Testare=$_POST['ID_Testare'] ?? null;
-        if($ID_Testare){
-            $stmt_delete=$conexiune_bd->prepare("DELETE FROM testare_pacient WHERE ID_Testare = ?");
-            $stmt_delete->bind_param('i', $ID_Testare);
-            if($stmt_delete->execute()){
-                echo "<script>alert('Înregistrarea a fost ștearsă!'); window.location.reload();</script>";
-            } else{
-                echo "<script>alert('Eroare la ștergere!');</script>";
-            }
-            $stmt_delete->close();
-        }
-    }
-?>
-
-<?php
-    include "layout/footer.php";
+<?php 
+    include "layout/footer.php"; 
 ?>
