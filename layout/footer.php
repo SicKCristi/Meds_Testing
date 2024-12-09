@@ -6,6 +6,7 @@
                 <small class="d-block text-muted">&copy; 2024-<?= date("Y") ?></small>
                 
                 <div class="mt-3">
+                    <p>Poți să mă urmărești și pe:</p>
                     <a href="https://www.instagram.com/cristi_scarlatescu20/" target="_blank" class="me-3 text-muted" title="Instagram">
                         <i class="fa-brands fa-instagram" style="font-size: 24px;"></i>
                     </a>

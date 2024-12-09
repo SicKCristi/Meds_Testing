@@ -80,13 +80,13 @@
 
             <div class="d-flex justify-content-between mb-3">
                 <button type="submit" class="btn btn-primary w-45">Conectare</button>
-                <a href="index.php" class="btn btn-outline-primary w-45">Anulare</a>
+                <a href="index.php" class="btn btn-outline-primary w-45">Anulează</a>
             </div>
 
         </form>
 
         <div class="text-center mt-3">
-            <p>Nu aveți un cont deja?</p>
+            <p><b>Nu aveți un cont deja?</b></p>
             <a href="register.php" class="btn btn-success">Înregistrează-te</a>
         </div>
 
