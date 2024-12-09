@@ -61,6 +61,26 @@
     </div>
 </div>
 
+<div class="slide" style="background-color: #08618d">
+    <div class="container text-white py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-md-6">
+                <h1 class="mb-5 display-2"><strong>Echipa de medici</strong></h1>
+                <p>
+                    Aceasta este pagina dedicată echipei de medici implicați în această testare, unde puteți găsi informații despre specializările și contribuțiile lor.
+                    Pe această pagină veți descoperi detalii despre echipa de medici cu care participați la testare.
+                </p>
+                <a href="echipa_medici.php" class="btn btn-primary btn-lg mt-3">
+                    Vizualizați
+                </a>
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="/images/Echipa_medici.png" class="img-fluid" alt="hero" />
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php
     include "layout/footer.php"
 ?>

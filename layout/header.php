@@ -89,6 +89,7 @@ if(isset($_SESSION["Email"])){
                 <li><a class="dropdown-item" href="/adaugare_medicament.php">Adaugă un nou medicament</a></li>
                 <li><a class="dropdown-item" href="/vizualizare_consultatii.php">Vezi consultațiile tale</a></li>
                 <li><a class="dropdown-item" href="/vizualizare_studii.php">Vezi studiile tale</a></li>
+                <li><a class="dropdown-item" href="/echipa_medici.php">Vezi echipa de medici a testării</a></li>
               </ul>
             </div>
           <?php } ?>
