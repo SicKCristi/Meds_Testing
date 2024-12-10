@@ -11,18 +11,25 @@
     // Funcția pentru ștergerea înregistrării specificate
     if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['delete_testare'])){
         $ID_Testare=$_POST['ID_Testare'] ?? null;
-
+    
         if($ID_Testare){
-            $stmt_delete=$conexiune_bd->prepare("DELETE FROM testare_pacient WHERE ID_Testare = ?");
-            $stmt_delete->bind_param('i', $ID_Testare);
-            if($stmt_delete->execute()){
-                $alert_message="Înregistrarea cu ID $ID_Testare a fost ștearsă cu succes!";
+            // Prima dată vom șterge din tabela consultație
+            $stmt_delete_consultatie=$conexiune_bd->prepare("DELETE FROM consultatie WHERE ID_Testare = ?");
+            $stmt_delete_consultatie->bind_param('i', $ID_Testare);
+            $stmt_delete_consultatie->execute();
+            $stmt_delete_consultatie->close();
+    
+            // Apoi, după ce am șters din tabela consultație, putem șterge și din tabela testare_pacient
+            $stmt_delete_testare=$conexiune_bd->prepare("DELETE FROM testare_pacient WHERE ID_Testare = ?");
+            $stmt_delete_testare->bind_param('i', $ID_Testare);
+            if($stmt_delete_testare->execute()){
+                $alert_message="Înregistrarea a fost ștearsă cu succes!";
                 $alert_class="alert-success";
             } else{
-                $alert_message="Eroare la ștergere!";
+                $alert_message="Eroare la ștergere din testare_pacient!";
                 $alert_class="alert-danger";
             }
-            $stmt_delete->close();
+            $stmt_delete_testare->close();
         }
     }
 
@@ -86,9 +93,8 @@
     <h2>Testările la care dumneavoastră participați</h2>
     <?php if(!empty($testari)): ?>
         <table class="table table-striped table-bordered">
-            <thead>
+            <thead class="table-primary">
                 <tr>
-                    <th>ID Testare</th>
                     <th>Data Înrolării</th>
                     <th>Statusul</th>
                     <th>Scopul Studiului</th>
@@ -106,7 +112,6 @@
                     <?php if(!empty($medici_testari[$id_testare])): ?>
                         <?php foreach($medici_testari[$id_testare] as $medic): ?>
                             <tr>
-                                <td><?= htmlspecialchars($testare['ID_Testare']) ?></td>
                                 <td><?= htmlspecialchars($testare['DataInrolarii']) ?></td>
                                 <td><?= htmlspecialchars($testare['Statusul']) ?></td>
                                 <td><?= htmlspecialchars($testare['Scopul']) ?></td>
@@ -130,11 +135,11 @@
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">Ești sigur?</h5>
+                                                    <h5 class="modal-title">Confirmare</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    Renunți la testarea cu ID <?= htmlspecialchars($testare['ID_Testare']) ?>?
+                                                    Ești sigur că vrei să retragi de la această testare?
                                                 </div>
                                                 <div class="modal-footer">
                                                     <form method="POST">

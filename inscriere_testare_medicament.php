@@ -1,36 +1,31 @@
 <?php
-include "layout/header.php";
-
-if($_SERVER['REQUEST_METHOD']==='POST'){
+    include "layout/header.php";
     include "tools/db.php";
-    include "functii_stergere_pacient.php";
 
-    $conexiune_bd=getDatabaseConnection();
+    $conexiune_bd = getDatabaseConnection();
 
-    if(isset($_POST['delete_medicament_pacient'])){
-        $ID_Medicament=$_POST['ID_Medicament'] ?? null;
-        if($ID_Medicament){
-            sterge_medicament_selectat($conexiune_bd, $ID_Medicament);
+    $medicamente=[];
+    $query_medicamente="SELECT ID_Medicament, Denumirea FROM medicamente";
+    $rezultat_medicamente=$conexiune_bd->query($query_medicamente);
+    if ($rezultat_medicamente){
+        while($rand=$rezultat_medicamente->fetch_assoc()){
+            $medicamente[]=$rand;
         }
     }
 
-
-    if (isset($_POST['inscriere_pacient_medicament'])) {
-        // Verificăm dacă ID_Pacient există în sesiune
-        if (!isset($_SESSION['ID_Pacient'])){
-            // Dacă ID_Pacient nu este în sesiune, încercăm să îl obținem din tabela pacienti folosind email-ul utilizatorului
-            if (!isset($_SESSION['Email'])){
+    if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['inscriere_pacient_medicament'])){
+        if(!isset($_SESSION['ID_Pacient'])){
+            if(!isset($_SESSION['Email'])){
                 echo "<div class='alert alert-danger'>Eroare: Utilizatorul nu este autentificat. Te rugăm să te autentifici din nou!</div>";
                 exit();
             }
-    
             $email_utilizator=$_SESSION['Email'];
             $stmt=$conexiune_bd->prepare("SELECT ID_Pacient FROM pacienti WHERE Emailul = ?");
             $stmt->bind_param('s', $email_utilizator);
             $stmt->execute();
             $stmt->bind_result($ID_Pacient);
-    
-            if ($stmt->fetch()){
+
+            if($stmt->fetch()){
                 $_SESSION['ID_Pacient']=$ID_Pacient;
             } else{
                 echo "<div class='alert alert-danger'>Eroare: Nu s-a găsit pacient asociat acestui utilizator! Te rugăm să contactezi administratorul.</div>";
@@ -39,45 +34,53 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
             }
             $stmt->close();
         }
-    
-        // Preluăm ID_Pacient din sesiune
+
         $ID_Pacient=$_SESSION['ID_Pacient'];
-    
-        // Preluăm valorile din formular
         $ID_Medicament=$_POST['ID_Medicament'];
         $DataStart=$_POST['DataStart'];
         $DataFinalizare=$_POST['DataFinalizare'];
-    
-        // Verificăm dacă ID_Medicament există în tabela medicamente
+
         $stmt=$conexiune_bd->prepare("SELECT COUNT(*) FROM medicamente WHERE ID_Medicament = ?");
         $stmt->bind_param('i', $ID_Medicament);
         $stmt->execute();
-        $stmt->bind_result($medicament_exists);
+        $stmt->bind_result($medicament_exista);
         $stmt->fetch();
         $stmt->close();
-    
-        if($medicament_exists==0){
-            echo "<div class='alert alert-danger'>ID-ul medicamentului nu există!</div>";
-        } elseif($DataStart >= $DataFinalizare){
-            echo "<div class='alert alert-danger'>Data de start trebuie să fie înainte de data de finalizare!</div>";
+
+        if($medicament_exista==0){
+            echo "<div class='alert alert-danger'>Medicamentul selectat nu există!</div>";
         } else{
-            // Inserăm datele în tabelul pacient_medicament
-            $stmt=$conexiune_bd->prepare("INSERT INTO pacient_medicament (ID_Pacient, ID_Medicament, DataStart, DataFinalizare) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param('iiss', $ID_Pacient, $ID_Medicament, $DataStart, $DataFinalizare);
-            if($stmt->execute()){
-                echo "<div class='alert alert-success'>Pacientul a fost înscris cu succes pentru medicament!</div>";
-            } else{
-                echo "<div class='alert alert-danger'>A apărut o eroare la înregistrare: " . htmlspecialchars($stmt->error) . "</div>";
-            }
+            $stmt=$conexiune_bd->prepare("SELECT COUNT(*) FROM pacient_medicament WHERE ID_Pacient = ? AND ID_Medicament = ?");
+            $stmt->bind_param('ii', $ID_Pacient, $ID_Medicament);
+            $stmt->execute();
+            $stmt->bind_result($medicament_testat);
+            $stmt->fetch();
             $stmt->close();
+
+            if($medicament_testat>0){
+                echo "<div class='alert alert-danger'>Pacientul este deja înscris pentru testarea acestui medicament!</div>";
+            } elseif($DataStart>=$DataFinalizare){
+                echo "<div class='alert alert-danger'>Data de start trebuie să fie înainte de data de finalizare!</div>";
+            } else{
+                $stmt=$conexiune_bd->prepare("INSERT INTO pacient_medicament (ID_Pacient, ID_Medicament, DataStart, DataFinalizare) VALUES (?, ?, ?, ?)");
+                $stmt->bind_param('iiss', $ID_Pacient, $ID_Medicament, $DataStart, $DataFinalizare);
+                if($stmt->execute()){
+                    echo '
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        Pacientul a fost înscris cu succes pentru medicament!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
+                } else{
+                    echo '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        A apărut o eroare la înregistrare: ' . htmlspecialchars($stmt->error) . '
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
+                }
+                $stmt->close();
+            }
         }
     }
-
-    // Ștergere din tabela consultație
-    if(isset($_POST['delete_medicament_pacient'])){
-        stergere_medicament_pacient($conexiune_bd);
-    }
-}
 ?>
 
 <div class="container py-5">
@@ -85,8 +88,20 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     <form method="post">
         <input type="hidden" name="inscriere_pacient_medicament" value="1">
         <div class="mb-3">
-            <label class="form-label">ID Medicament</label>
-            <input type="number" class="form-control" name="ID_Medicament" required>
+            <label class="form-label">Alege medicamentul pentru testare</label>
+            <?php foreach($medicamente as $medicament): ?>
+                <div class="form-check">
+                    <input 
+                        class="form-check-input" 
+                        type="radio" 
+                        name="ID_Medicament" 
+                        value="<?= htmlspecialchars($medicament['ID_Medicament']) ?>" 
+                        required>
+                    <label class="form-check-label">
+                        <?= htmlspecialchars($medicament['Denumirea']) ?>
+                    </label>
+                </div>
+            <?php endforeach; ?>
         </div>
         <div class="mb-3">
             <label class="form-label">Data Start</label>
@@ -97,9 +112,6 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
             <input type="date" class="form-control" name="DataFinalizare" required>
         </div>
         <button type="submit" class="btn btn-success">Înscrie-te!</button>
-    </form>
-    <form method="post">
-        <button type="submit" name="delete_medicament_pacient" class="btn btn-danger mt-2">Șterge înregistrarea</button>
     </form>
 </div>
 

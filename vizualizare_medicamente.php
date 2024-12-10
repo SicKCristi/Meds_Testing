@@ -97,8 +97,8 @@
     <?php if(empty($data1)) : ?>
         <p class="text-center fs-4">Nu participați la nicio testare!</p>
     <?php else : ?>
-        <table class="table table-striped">
-            <thead>
+        <table class="table table-striped table-bordered">
+            <thead class="table-primary">
                 <tr>
                     <th>Denumirea Categoriei</th>
                     <th>Denumirea Medicamentului</th>
@@ -142,12 +142,12 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="modalLabel<?= $entry['ID_Medicament']; ?>">
-                                                Ești sigur?
+                                                Confirmare
                                             </h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Închide"></button>
                                         </div>
                                         <div class="modal-body">
-                                            Ești sigur că vrei să ștergi această înregistrare?
+                                            Ești sigur că vrei să renunți la testarea acestui medicament?
                                         </div>
                                         <div class="modal-footer">
                                             <form method="POST" action="">
