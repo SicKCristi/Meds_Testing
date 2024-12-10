@@ -84,7 +84,6 @@
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th>ID Consultație</th>
                     <th>Data Consultației</th>
                     <th>Data Înrolării</th>
                     <th>Statusul</th>
@@ -98,7 +97,6 @@
                     <?php if(!empty($pacienti_consultatii[$id_consultatie])): ?>
                         <?php foreach($pacienti_consultatii[$id_consultatie] as $pacient): ?>
                             <tr>
-                                <td><?= htmlspecialchars($consultatie['ID_Consultatie']) ?></td>
                                 <td><?= htmlspecialchars($consultatie['DataConsultatie']) ?></td>
                                 <td><?= htmlspecialchars($pacient['DataInrolarii']) ?></td>
                                 <td><?= htmlspecialchars($pacient['Statusul']) ?></td>
@@ -122,11 +120,11 @@
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="modalLabel<?= $id_consultatie ?>">Confirmare Ștergere</h5>
+                                                    <h5 class="modal-title" id="modalLabel<?= $id_consultatie ?>">Confirmare</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    Ești sigur că vrei să ștergi consultația cu ID-ul <strong><?= htmlspecialchars($id_consultatie) ?></strong>?
+                                                    Ești sigur că dorești să ștergi această consultație?
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anulează</button>

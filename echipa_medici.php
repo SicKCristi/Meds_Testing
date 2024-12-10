@@ -98,6 +98,46 @@
     } else{
         $medicamente_medici=[];
     }
+
+    // Interogarea 6: Medicii care au participat la studii pentru un medicament selectat
+
+    // Lista cu medicamente pentru selectare
+    $medicamente=[];    
+    $query_medicamente="SELECT ID_Medicament, Denumirea FROM medicamente";
+    $rezultat_medicamente=$conexiune_bd->query($query_medicamente);
+    if($rezultat_medicamente){
+        while($rand=$rezultat_medicamente->fetch_assoc()){
+            $medicamente[]=$rand;
+        }
+    }
+
+    $id_medicament=$_POST['id_medicament'] ?? null;
+    $medici_medicament_specific=[];
+
+    if($id_medicament){
+        $query6="
+            SELECT 
+                D.NumeDoctor,
+                D.PrenumeDoctor,
+                D.Specializarea,
+                SC.DataInceput,
+                SC.Scopul
+            FROM doctor AS D
+            WHERE D.ID_Doctor IN (
+                                    SELECT SD.ID_Doctor
+                                    FROM studiu_doctor AS SD
+                                    WHERE SD.ID_Studiu IN (
+                                                            SELECT SC.ID_Studiu
+                                                            FROM studiu_clinic AS SC
+                                                            WHERE SC.ID_Medicament=? ))";
+
+        $stmt=$conexiune_bd->prepare($query6);
+        $stmt->bind_param('i', $id_medicament);
+        $stmt->execute();
+        $rezultat6=$stmt->get_result();
+        $medici_medicament_specific=$rezultat6->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+    }
 ?>
 
 <div class="container py-5">
@@ -130,13 +170,13 @@
     <!-- Tabelul 2 -->
     <h2>Medicii care au participat la studii cu medicamente aprobate după un anumit an</h2>
 
-    <button class="btn btn-primary 5" data-bs-toggle="modal" data-bs-target="#modalMediciMedicamente">Introdu date</button>
+    <button class="btn btn-primary 5" data-bs-toggle="modal" data-bs-target="#modalMediciMedicamente">Introducți anul de referință</button>
     <div class="modal fade" id="modalMediciMedicamente" tabindex="-1" aria-labelledby="modalMediciMedicamenteLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form method="POST">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalMediciMedicamenteLabel">Setează anul minim pentru aprobare</h5>
+                        <h5 class="modal-title" id="modalMediciMedicamenteLabel">Anul minim pentru aprobare</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -197,19 +237,19 @@
 
     <!-- Tabelul 4 -->
 <h2>Medicii care au participat la studii clinice după o anumită dată</h2>
-<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalStudiiMedici">Introdu date</button>
+<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalStudiiMedici">Introduceți dată</button>
 
 <div class="modal fade" id="modalStudiiMedici" tabindex="-1" aria-labelledby="modalStudiiMediciLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="POST">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalStudiiMediciLabel">Setează data minimă pentru studii</h5>
+                    <h5 class="modal-title" id="modalStudiiMediciLabel">Data minimă pentru studii</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="data_inceput" class="form-label">Data Minimă</label>
+                        <label for="data_inceput" class="form-label">Prima dată</label>
                         <input type="date" class="form-control" name="data_inceput" id="data_inceput" value="<?= htmlspecialchars($data_inceput) ?>" required>
                     </div>
                 </div>
@@ -251,14 +291,14 @@
 
     <!-- Tabelul 5 -->
 <h2>Medicii care au participat la studii cu medicamente de un anumit producător</h2>
-<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalMedicamenteMedici">Introdu date</button>
+<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalMedicamenteMedici">Introduceți producătorul</button>
 
 <div class="modal fade" id="modalMedicamenteMedici" tabindex="-1" aria-labelledby="modalMedicamenteMediciLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="POST">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalMedicamenteMediciLabel">Setează producătorul medicamentului</h5>
+                    <h5 class="modal-title" id="modalMedicamenteMediciLabel">Introduceți producătorul medicamentului</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -302,6 +342,67 @@
 <?php else: ?>
     <p class="text-muted">Nu există medici care să fi participat la studii cu medicamente produse de acest producător.</p>
 <?php endif; ?>
+
+    <!-- Tabelul 6 -->
+<h2>Medicii care au participat la studii pentru un medicament specific</h2>
+<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalMedicamentSpecific">Selectați medicamentul</button>
+
+<div class="modal fade" id="modalMedicamentSpecific" tabindex="-1" aria-labelledby="modalMedicamentSpecificLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalMedicamentSpecificLabel">Selectează medicamentul</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="id_medicament" class="form-label">Medicament</label>
+                        <select class="form-select" name="id_medicament" id="id_medicament" required>
+                            <option value="" disabled selected>Selectează un medicament</option>
+                            <?php foreach($medicamente as $medicament): ?>
+                                <option value="<?= htmlspecialchars($medicament['ID_Medicament']) ?>">
+                                    <?= htmlspecialchars($medicament['Denumirea']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anulează</button>
+                    <button type="submit" class="btn btn-primary">Confirmă</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <?php if(!empty($medici_medicament_specific)): ?>
+        <table class="table table-striped table-bordered mb-5">
+            <thead>
+                <tr>
+                    <th>Nume</th>
+                    <th>Prenume</th>
+                    <th>Specializarea</th>
+                    <th>Data Început</th>
+                    <th>Scop</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($medici_medicament_specific as $medic): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($medic['NumeDoctor']) ?></td>
+                        <td><?= htmlspecialchars($medic['PrenumeDoctor']) ?></td>
+                        <td><?= htmlspecialchars($medic['Specializarea']) ?></td>
+                        <td><?= htmlspecialchars($medic['DataInceput']) ?></td>
+                        <td><?= htmlspecialchars($medic['Scopul']) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p class="text-muted">Nu există medici care să fi participat la studii pentru medicamentul selectat.</p>
+    <?php endif; ?>
 </div>
 
 <?php
