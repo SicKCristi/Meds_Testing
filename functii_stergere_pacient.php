@@ -75,16 +75,34 @@ function sterge_pacient_din_pacienti($conexiune_bd) {
     $ID_Pacient=obtine_id_pacient($conexiune_bd);
 
     if($ID_Pacient){
-        // Ștergerea din tabela medicament_pacient
+        // Ștergerea din tabela consultatie bazată pe ID_Testare asociat cu ID_Pacient
+        $stmt=$conexiune_bd->prepare("
+            DELETE FROM consultatie
+            WHERE ID_Testare IN (
+                SELECT ID_Testare 
+                FROM testare_pacient 
+                WHERE ID_Pacient = ?
+            )");
+        $stmt->bind_param('i', $ID_Pacient);
+        if(!$stmt->execute()){
+            echo "<div class='alert alert-danger'>Eroare la ștergerea consultațiilor: " . htmlspecialchars($stmt->error) . "</div>";
+        }
+        $stmt->close();
+
+        // Ștergerea din tabela pacient_medicament
         $stmt=$conexiune_bd->prepare("DELETE FROM pacient_medicament WHERE ID_Pacient = ?");
         $stmt->bind_param('i', $ID_Pacient);
-        $stmt->execute();
+        if(!$stmt->execute()){
+            echo "<div class='alert alert-danger'>Eroare la ștergerea medicamentelor pacientului: " . htmlspecialchars($stmt->error) . "</div>";
+        }
         $stmt->close();
 
         // Ștergerea din tabela testare_pacient
         $stmt=$conexiune_bd->prepare("DELETE FROM testare_pacient WHERE ID_Pacient = ?");
         $stmt->bind_param('i', $ID_Pacient);
-        $stmt->execute();
+        if(!$stmt->execute()){
+            echo "<div class='alert alert-danger'>Eroare la ștergerea testărilor pacientului: " . htmlspecialchars($stmt->error) . "</div>";
+        }
         $stmt->close();
 
         // Ștergerea din tabela pacienti
@@ -93,12 +111,9 @@ function sterge_pacient_din_pacienti($conexiune_bd) {
         if($stmt->execute()){
             echo "<div class='alert alert-success'>Pacientul și toate datele asociate au fost șterse cu succes!</div>";
         } else{
-            echo "<div class='alert alert-danger'>Eroare la ștergerea pacientului: ".htmlspecialchars($stmt->error) . "</div>";
+            echo "<div class='alert alert-danger'>Eroare la ștergerea pacientului: " . htmlspecialchars($stmt->error) . "</div>";
         }
         $stmt->close();
-    } else{
-        // Mesajul acesta va fi afișat doar dacă pacientul nu a fost găsit inițial
-        echo "<div class='alert alert-danger'>Pacientul nu a fost găsit pe baza emailului și telefonului din sesiune!</div>";
     }
 }
 

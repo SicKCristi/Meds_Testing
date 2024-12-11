@@ -60,25 +60,27 @@
     $stmt_testari->close();
 
     // Interogarea 2, folosind tabelele testare_pacient, studiu_clinic, doctor și doctor_studiu
-    $query_medici="
-        SELECT 
-            TP.ID_Testare,
-            D.NumeDoctor,
-            D.PrenumeDoctor,
-            SD.RolDoctor
-        FROM testare_pacient AS TP  JOIN studiu_clinic AS SC ON TP.ID_Studiu=SC.ID_Studiu
-                                    JOIN studiu_doctor AS SD ON SC.ID_Studiu=SD.ID_Studiu
-                                    JOIN doctor AS D ON SD.ID_Doctor=D.ID_Doctor
-        WHERE TP.ID_Testare IN (" . implode(',', array_keys($testari)) . ")";
-    $stmt_medici=$conexiune_bd->prepare($query_medici);
-    $stmt_medici->execute();
-    $rezultat_medici=$stmt_medici->get_result();
-
     $medici_testari=[];
-    while($rand=$rezultat_medici->fetch_assoc()){
-        $medici_testari[$rand['ID_Testare']][]=$rand;
+    if(!empty($testari)){
+        $query_medici="
+            SELECT 
+                TP.ID_Testare,
+                D.NumeDoctor,
+                D.PrenumeDoctor,
+                SD.RolDoctor
+            FROM testare_pacient AS TP  JOIN studiu_clinic AS SC ON TP.ID_Studiu=SC.ID_Studiu
+                                        JOIN studiu_doctor AS SD ON SC.ID_Studiu=SD.ID_Studiu
+                                        JOIN doctor AS D ON SD.ID_Doctor=D.ID_Doctor
+            WHERE TP.ID_Testare IN (" . implode(',', array_keys($testari)) . ")";
+        $stmt_medici=$conexiune_bd->prepare($query_medici);
+        $stmt_medici->execute();
+        $rezultat_medici=$stmt_medici->get_result();
+
+        while($rand=$rezultat_medici->fetch_assoc()){
+            $medici_testari[$rand['ID_Testare']][]=$rand;
+        }
+        $stmt_medici->close();
     }
-    $stmt_medici->close();
 ?>
 
 <div class="container py-5">
@@ -164,7 +166,7 @@
 
     <!-- Butonul care face legătura cu pagina vizualizare_medicamente.php -->
     <div class="mt-4">
-        <a href="vizualizare_medicamente.php" class="btn btn-primary">Vizualizează Testările</a>
+        <a href="vizualizare_medicamente.php" class="btn btn-primary">Vizualizează Medicamente</a>
     </div>
 </div>
 

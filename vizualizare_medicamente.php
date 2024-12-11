@@ -95,7 +95,7 @@
 
     <h2>Medicamentele pe care le testați</h2>
     <?php if(empty($data1)) : ?>
-        <p class="text-center fs-4">Nu participați la nicio testare!</p>
+        <p class="text-center fs-4">Nu participați la nicio testare a vreunui medicament!</p>
     <?php else : ?>
         <table class="table table-striped table-bordered">
             <thead class="table-primary">
