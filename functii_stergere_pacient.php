@@ -109,9 +109,17 @@ function sterge_pacient_din_pacienti($conexiune_bd) {
         $stmt=$conexiune_bd->prepare("DELETE FROM pacienti WHERE ID_Pacient = ?");
         $stmt->bind_param('i', $ID_Pacient);
         if($stmt->execute()){
-            echo "<div class='alert alert-success'>Pacientul și toate datele asociate au fost șterse cu succes!</div>";
+            echo '
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        Ștergerea a fost făcută cu succes!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
         } else{
-            echo "<div class='alert alert-danger'>Eroare la ștergerea pacientului: " . htmlspecialchars($stmt->error) . "</div>";
+            echo '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Eroare la ștergerea din baza de date!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
         }
         $stmt->close();
     }

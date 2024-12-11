@@ -31,7 +31,11 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
         $stmt->close();
 
         if($count>0){
-            echo "<div class='alert alert-danger'>Ești deja înscris ca pacient pentru testare!</div>";
+            echo '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Ești deja înscris în evidență!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
         } else{
             $query="SELECT IFNULL(MAX(ID_Pacient),0)+1 AS next_id FROM pacienti";
             $result=$conexiune_bd->query($query);
@@ -44,9 +48,17 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
             $stmt->bind_param('isssssss', $id_pacient_nou, $Adresa, $DataNasterii, $Emailul, $Numele, $Prenumele, $Sex, $Telefonul);
 
             if($stmt->execute()){
-                echo "<div class='alert alert-success'>Te-ai înscris cu succes!</div>";
+                echo '
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        Te-ai înscris cu succes la evidență!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
             } else{
-                echo "<div class='alert alert-danger'>A apărut o eroare la înregistrare: " . htmlspecialchars($stmt->error) . "</div>";
+                echo '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        A apărut o eroare la înregistrare!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
             }
             $stmt->close();
         }

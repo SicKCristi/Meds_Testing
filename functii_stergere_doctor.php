@@ -97,13 +97,25 @@ function sterge_doctor_din_doctor($conexiune_bd) {
         $stmt=$conexiune_bd->prepare("DELETE FROM doctor WHERE ID_Doctor = ?");
         $stmt->bind_param('i', $ID_Doctor);
         if($stmt->execute()){
-            echo "<div class='alert alert-success'>Doctorul și toate datele asociate au fost șterse cu succes!</div>";
+            echo '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Ștergerea a fost făcută cu succes!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
         } else{
-            echo "<div class='alert alert-danger'>Eroare la ștergerea doctorului: " . htmlspecialchars($stmt->error) . "</div>";
+            echo '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        A apărut o eroare ștergerea din baza de date!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
         }
         $stmt->close();
     } else{
-        echo "<div class='alert alert-danger'>Doctorul nu a fost găsit pe baza emailului și telefonului din sesiune!</div>";
+        echo '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Doctorul nu a fost găsit în baza de date!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
     }
 }
 

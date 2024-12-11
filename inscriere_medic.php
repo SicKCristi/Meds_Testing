@@ -35,9 +35,17 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
             $stmt=$conexiune_bd->prepare("INSERT INTO doctor (ID_Doctor, Emailul, NumeDoctor, PrenumeDoctor, Specializarea, Spitalul, Telefonul) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param('issssss', $ID_nou, $Emailul, $Nume, $Prenume, $Specializarea, $Spitalul, $Telefonul);
             if($stmt->execute()){
-                echo "<div class='alert alert-success'>Doctorul a fost adăugat cu succes!</div>";
+                echo '
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        Ați fost fost introdus în echipa de medici ai testării!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
             } else{
-                echo "<div class='alert alert-danger'>Eroare la adăugare: ".htmlspecialchars($stmt->error) . "</div>";
+                echo '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        A apărut o eroare la înregistrare!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
             }
             $stmt->close();
         }
@@ -73,13 +81,25 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
             $stmt=$conexiune_bd->prepare("DELETE FROM doctor WHERE ID_Doctor = ?");
             $stmt->bind_param('i', $ID_Doctor);
             if($stmt->execute()){
-                echo "<div class='alert alert-success'>Doctorul a fost șters cu succes!</div>";
+                echo '
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        Ați fost șters cu succes din baza de date!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
             } else{
-                echo "<div class='alert alert-danger'>Eroare la ștergere: " . htmlspecialchars($stmt->error) . "</div>";
+                echo '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        A apărut o eroare la ștergerea din baza de date!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
             }
             $stmt->close();
         } else{
-            echo "<div class='alert alert-warning'>Doctorul nu a fost găsit.</div>";
+            echo '
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Nu ați fost găsit în baza de date!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>';
         }
     }
 }
