@@ -4,27 +4,31 @@
 
     $conexiune_bd=getDatabaseConnection();
 
-    $producator=$_POST['producator'] ?? '';
+    $producator=$_POST['producator'] ?? null;
     $medicamente_medici=[];
-    // Interogarea 5: Medicii care au participat la studii cu medicamente produse de un anumit producător
-    // Interogare simplă cu 3 join-uri între tabele (#10)
-    $query5="
-        SELECT 
-            D.NumeDoctor,
-            D.PrenumeDoctor,
-            D.Specializarea,
-            M.Denumirea AS Medicament,
-            M.Producatorul
-        FROM doctor AS D    JOIN studiu_doctor AS SD ON D.ID_Doctor=SD.ID_Doctor
-                            JOIN studiu_clinic AS SC ON SD.ID_Studiu=SC.ID_Studiu
-                            JOIN medicamente AS M ON SC.ID_Medicament=M.ID_Medicament
-        WHERE M.Producatorul LIKE '%$producator%';";
 
-    $rezultat5=$conexiune_bd->query($query5);
-    if($rezultat5){
+    if($producator!==null){
+        // Interogarea 5: Medicii care au participat la studii cu medicamente produse de un anumit producător
+        // Interogare simplă cu 3 join-uri (#10)
+        $query5="
+            SELECT 
+                D.NumeDoctor,
+                D.PrenumeDoctor,
+                D.Specializarea,
+                M.Denumirea AS Medicament,
+                M.Producatorul
+            FROM doctor AS D    JOIN studiu_doctor AS SD ON D.ID_Doctor=SD.ID_Doctor
+                                JOIN studiu_clinic AS SC ON SD.ID_Studiu=SC.ID_Studiu
+                                JOIN medicamente AS M ON SC.ID_Medicament=M.ID_Medicament
+            WHERE M.Producatorul LIKE ?;";
+
+        $stmt=$conexiune_bd->prepare($query5);
+        $param="%$producator%";
+        $stmt->bind_param('s', $param);
+        $stmt->execute();
+        $rezultat5=$stmt->get_result();
         $medicamente_medici=$rezultat5->fetch_all(MYSQLI_ASSOC);
-    } else{
-        $medicamente_medici=[];
+        $stmt->close();
     }
 ?>
 
@@ -49,7 +53,7 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="producator" class="form-label">Producător</label>
-                            <input type="text" class="form-control" name="producator" id="producator" value="<?= htmlspecialchars($producator) ?>" required>
+                            <input type="text" class="form-control" name="producator" id="producator" value="<?= htmlspecialchars($producator ?? '') ?>" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -61,7 +65,16 @@
         </div>
     </div>
 
-    <?php if(!empty($medicamente_medici)): ?>
+    <?php if($producator===null): ?>
+        <!-- Nu afișăm nimic dacă nu s-a introdus input -->
+    <?php elseif(empty($medicamente_medici)): ?>
+        <!-- Mesaj în cazul în care nu există rezultate -->
+        <div class='alert alert-warning alert-dismissible fade show' role='alert'>
+            Nu există niciun medic care să satisfacă cerința dată!
+            <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>
+    <?php else: ?>
+        <!-- Tabelul cu rezultate -->
         <table class="table table-striped table-bordered mb-5">
             <thead>
                 <tr>
@@ -84,11 +97,6 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
-    <?php else: ?>
-        <div class='alert alert-warning alert-dismissible fade show' role='alert'>
-            Nu există niciun medic care să satisfacă cerința dată!
-            <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
-        </div>
     <?php endif; ?>
 </div>
 
