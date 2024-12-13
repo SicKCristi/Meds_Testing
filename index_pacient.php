@@ -26,6 +26,26 @@
     <div class="container text-white py-5">
         <div class="row align-items-center g-5">
             <div class="col-md-6">
+                <h1 class="mb-5 display-2"><strong>Aruncă o privire asupra echipei de medici</strong></h1>
+                <p>
+                    Explorează lista echipei de medici implicați în cele mai importante studii clinice și consultă specializările acestora pentru a afla mai multe despre expertiza lor.
+                    Descoperă echipa noastră de medici dedicați, care contribuie activ la avansarea cercetărilor prin participarea în proiecte medicale de prestigiu.
+                </p>
+                <a href="informatii_despre_medici.php" class="btn btn-primary btn-lg mt-3">
+                    Vizualizați
+                </a>
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="/images/Echipa_medici_2.png" class="img-fluid" alt="hero" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="container text-white py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-md-6">
                 <h1 class="mb-5 display-2"><strong>Vizualizare a testărilor dumneavoastră</strong></h1>
                 <p>
                     Explorați istoricul testărilor dumneavoastră medicale într-un mod simplu și intuitiv.

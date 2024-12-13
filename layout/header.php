@@ -1,9 +1,8 @@
 <?php
-  session_start();
-
-  $autentificat=false;
-  if(isset($_SESSION["Email"])){
-      $autentificat=true;
+    session_start();
+    $autentificat=false;
+    if(isset($_SESSION["Email"])){
+        $autentificat=true;
   }
 ?>
 
@@ -46,17 +45,6 @@
                 <i class="fa-solid fa-house fa-lg" style="color: #08618d;"></i>
               </a>
             </li>
-
-            <li class="nav-item ms-2">
-              <button class="btn btn-link p-0" title="NIGHT MODE" style="color: #08618d; font-size: 1.25rem; border: none; background: none;">
-                <i class="fa-solid fa-moon"></i>
-              </button>
-            </li>
-            <li class="nav-item ms-2">
-              <button class="btn btn-link p-0" title="LIGHT MODE" style="color: #08618d; font-size: 1.25rem; border: none; background: none;">
-                <i class="fa-solid fa-sun"></i>
-              </button>
-            </li>
           </ul>
 
           <ul class="navbar-nav">
@@ -85,6 +73,7 @@
                 <li><a class="dropdown-item" href="/inscriere_testare_medicament.php">Adaugă un medicament testat</a></li>
                 <li><a class="dropdown-item" href="/vizualizare_testari.php">Vezi testările tale</a></li>
                 <li><a class="dropdown-item" href="/vizualizare_medicamente.php">Vezi medicamentele testate</a></li>
+                <li><a class="dropdown-item" href="/informatii_despre_medici.php">Vezi informații despre medicii</a></li>
               </ul>
           </div>
           <?php } elseif($_SESSION["Rol"]==='Medic'){ ?>

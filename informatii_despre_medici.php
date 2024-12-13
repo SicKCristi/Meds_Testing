@@ -37,7 +37,7 @@
         $conditie_filtrare[]="NumeDoctor LIKE '%$filtru_nume%'";
     }
 
-    if (!empty($_GET['filtru_prenume'])){
+    if(!empty($_GET['filtru_prenume'])){
         $filtru_prenume=$conexiune_bd->real_escape_string($_GET['filtru_prenume']);
         $conditie_filtrare[]="PrenumeDoctor LIKE '%$filtru_prenume%'";
     }
@@ -69,21 +69,6 @@
 ?>
 
 <div class="container py-5">
-    <!-- Dropdown pentru informații suplimentare -->
-    <div class="dropdown mb-4">
-        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownInformatii" data-bs-toggle="dropdown" aria-expanded="false">
-            Lista cu informații suplimentare
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownInformatii">
-            <li><a class="dropdown-item" href="numar_consultatii_per_medic.php">Numărul de consultații pentru fiecare medic</a></li>
-            <li><a class="dropdown-item" href="medici_cu_studii_cu_medicamente_dupa_un_an_dat.php">Medici cu studii după un an dat</a></li>
-            <li><a class="dropdown-item" href="medicii_cu_cele_mai_multe_studii.php">Medicii cu cele mai multe studii</a></li>
-            <li><a class="dropdown-item" href="medici_la_studii_clinice_dupa_o_data_specificata.php">Medici la studii clinice după o dată</a></li>
-            <li><a class="dropdown-item" href="medici_cu_studii_cu_medicamente_produse_de_un_anumit_producator.php">Medici la studii cu medicamente produse de un producător</a></li>
-            <li><a class="dropdown-item" href="medicii_cu_cele_mai_multe_consultatii.php">Medicii cu cele mai multe consultații</a></li>
-        </ul>
-    </div>
-
     <!-- Sortare și filtrare -->
     <div class="mb-4">
         <div class="d-inline-block">
@@ -140,7 +125,7 @@
     </div>
 
     <h2>Tabelul cu medicii</h2>
-    <?php if($rezultat_medici && $rezultat_medici->num_rows>0): ?>
+    <?php if($rezultat_medici && $rezultat_medici->num_rows > 0): ?>
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
@@ -153,7 +138,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php while($rand=$rezultat_medici->fetch_assoc()): ?>
+                <?php while($rand = $rezultat_medici->fetch_assoc()): ?>
                     <tr>
                         <td><?= htmlspecialchars($rand['NumeDoctor']) ?></td>
                         <td><?= htmlspecialchars($rand['PrenumeDoctor']) ?></td>
@@ -166,7 +151,7 @@
             </tbody>
         </table>
     <?php else: ?>
-        <p class="text-center fs-4">Nu există medici care să corespundă criteriilor.</p>
+        <p class="text-center fs-4">Nu există medici în baza de date.</p>
     <?php endif; ?>
 </div>
 
