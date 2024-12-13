@@ -4,13 +4,32 @@
 
     $conexiune_bd=getDatabaseConnection();
 
-    // Determină sortarea
-    $order_by=$_GET['order_by'] ?? 'asc';
-    $sort_query=$order_by==='desc' 
-    ? "ORDER BY NumeDoctor DESC, PrenumeDoctor DESC" 
-    : "ORDER BY NumeDoctor ASC, PrenumeDoctor ASC";
+    // Se va selecta modalitatea de sortare a tabelei de medici
+    $sort_by=$_GET['sort_by'] ?? 'nume_asc';
+    switch($sort_by){
+        case 'nume_asc':
+            $sort_query="ORDER BY NumeDoctor ASC, PrenumeDoctor ASC";
+            break;
+        case 'nume_desc':
+            $sort_query="ORDER BY NumeDoctor DESC, PrenumeDoctor DESC";
+            break;
+        case 'specializare_asc':
+            $sort_query="ORDER BY Specializarea ASC";
+            break;
+        case 'specializare_desc':
+            $sort_query="ORDER BY Specializarea DESC";
+            break;
+        case 'spital_asc':
+            $sort_query="ORDER BY Spitalul ASC";
+            break;
+        case 'spital_desc':
+            $sort_query="ORDER BY Spitalul DESC";
+            break;
+        default:
+            $sort_query="ORDER BY NumeDoctor ASC, PrenumeDoctor ASC";
+            break;
+    }
 
-    // Interogarea medicilor
     $query_medici="
         SELECT 
             NumeDoctor,
@@ -26,7 +45,7 @@
 
 <div class="container py-5">
 
-    <!-- Lista cu paginile pentru informații suplimentare -->
+    <!-- Dropdown pentru informații suplimentare -->
     <div class="dropdown mb-4">
         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownInformatii" data-bs-toggle="dropdown" aria-expanded="false">
             Lista cu informații suplimentare
@@ -41,13 +60,22 @@
         </ul>
     </div>
 
-    <h2>Tabelul cu medicii</h2>
-
-    <div class="mb-3">
-        <a href="?order_by=asc" class="btn btn-success <?= $order_by === 'asc' ? 'disabled' : '' ?>">Sortare alfabetică</a>
-        <a href="?order_by=desc" class="btn btn-warning <?= $order_by === 'desc' ? 'disabled' : '' ?>">Sortare invers alfabetică</a>
+    <div class="mb-4">
+        <form method="GET" class="d-inline-block">
+            <label for="sort_by" class="form-label fw-bold">Sortare după:</label>
+            <select name="sort_by" id="sort_by" class="form-select d-inline-block w-auto ms-2">
+                <option value="nume_asc" <?= $sort_by === 'nume_asc' ? 'selected' : '' ?>>Numele medicului (A-Z)</option>
+                <option value="nume_desc" <?= $sort_by === 'nume_desc' ? 'selected' : '' ?>>Nume medicului (Z-A)</option>
+                <option value="specializare_asc" <?= $sort_by === 'specializare_asc' ? 'selected' : '' ?>>Denumirea specializării (A-Z)</option>
+                <option value="specializare_desc" <?= $sort_by === 'specializare_desc' ? 'selected' : '' ?>>Denumirea specializării (Z-A)</option>
+                <option value="spital_asc" <?= $sort_by === 'spital_asc' ? 'selected' : '' ?>>Numele spitalului (A-Z)</option>
+                <option value="spital_desc" <?= $sort_by === 'spital_desc' ? 'selected' : '' ?>>Numele spitalui (Z-A)</option>
+            </select>
+            <button type="submit" class="btn btn-primary ms-2">Aplică</button>
+        </form>
     </div>
 
+    <h2>Tabelul cu medicii</h2>
     <?php if($rezultat_medici && $rezultat_medici->num_rows>0): ?>
         <table class="table table-striped table-bordered">
             <thead>
@@ -61,7 +89,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php while($rand = $rezultat_medici->fetch_assoc()): ?>
+                <?php while($rand=$rezultat_medici->fetch_assoc()): ?>
                     <tr>
                         <td><?= htmlspecialchars($rand['NumeDoctor']) ?></td>
                         <td><?= htmlspecialchars($rand['PrenumeDoctor']) ?></td>

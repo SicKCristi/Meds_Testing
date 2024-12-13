@@ -2,6 +2,7 @@
     include "layout/header.php";
     echo '<script src="tranzitie.js"></script>';
     echo '<link rel="stylesheet" type="text/css" href="stilizare_tranzitii.css">';
+    echo '<link rel="stylesheet" type="text/css" href="stilizare_div_pagini_index.css">';
 ?>
 
 <div class="slide show" style="background-color: #08618d">
@@ -21,7 +22,7 @@
     </div>
 </div>
 
-<div class="slide" style="background-color: #08618d">
+<div class="slide">
     <div class="container text-white py-5">
         <div class="row align-items-center g-5">
             <div class="col-md-6">
@@ -41,7 +42,7 @@
     </div>
 </div>
 
-<div class="slide" style="background-color: #08618d">
+<div class="slide">
     <div class="container text-white py-5">
         <div class="row align-items-center g-5">
             <div class="col-md-6">
@@ -61,7 +62,7 @@
     </div>
 </div>
 
-<div class="slide" style="background-color: #08618d">
+<div class="slide">
     <div class="container text-white py-5">
         <div class="row align-items-center g-5">
             <div class="col-md-6">

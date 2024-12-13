@@ -1,10 +1,10 @@
 <?php
-session_start();
+  session_start();
 
-$autentificat=false;
-if(isset($_SESSION["Email"])){
-    $autentificat=true;
-}
+  $autentificat=false;
+  if(isset($_SESSION["Email"])){
+      $autentificat=true;
+  }
 ?>
 
 <!doctype html>
@@ -20,7 +20,7 @@ if(isset($_SESSION["Email"])){
   </head>
   <body>
 
-  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom shadow-sm">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom shadow-sm" style="background-color: #daf3fd !important;">
     <div class="container">
       <a class="navbar-brand" href="<?php 
           if($autentificat){
@@ -45,6 +45,17 @@ if(isset($_SESSION["Email"])){
               ?>" title="HOME">
                 <i class="fa-solid fa-house fa-lg" style="color: #08618d;"></i>
               </a>
+            </li>
+
+            <li class="nav-item ms-2">
+              <button class="btn btn-link p-0" title="NIGHT MODE" style="color: #08618d; font-size: 1.25rem; border: none; background: none;">
+                <i class="fa-solid fa-moon"></i>
+              </button>
+            </li>
+            <li class="nav-item ms-2">
+              <button class="btn btn-link p-0" title="LIGHT MODE" style="color: #08618d; font-size: 1.25rem; border: none; background: none;">
+                <i class="fa-solid fa-sun"></i>
+              </button>
             </li>
           </ul>
 

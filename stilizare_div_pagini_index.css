@@ -1,0 +1,7 @@
+.slide:nth-child(odd){
+    background-color: #08618d;
+}
+
+.slide:nth-child(even){
+    background-color: #3f8dbb; 
+}
