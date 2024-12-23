@@ -1,6 +1,5 @@
 <?php
     include "layout/header.php";
-    include "tools/db.php";
 
     $conexiune_bd=getDatabaseConnection();
     $Email_utilizator=$_SESSION['Email'] ?? null;
@@ -8,11 +7,12 @@
     $alert_message=null;
     $alert_class="";
 
-    // Interogarea 1, folosim tabelele utilizator, doctor și consultație
+    // Interogarea 1: folosim tabelele utilizator, doctor și consultatie
     $query_consultatii="
         SELECT 
             C.ID_Consultatie,
-            C.DataConsultatie
+            C.DataConsultatie,
+            C.Observatii
         FROM utilizator AS U    JOIN doctor AS D ON U.Email=D.Emailul
                                 JOIN consultatie AS C ON D.ID_Doctor=C.ID_Doctor
         WHERE U.Email=?";
@@ -27,7 +27,7 @@
     }
     $stmt_consultatii->close();
 
-    // Interogarea 2, folosim tabelele consultație, testare_pacient, pacient pentru datele suplimentare
+    // Interogarea 2: folosim tabelele consultatie, testare_pacient și pacient pentru date suplimentare
     $pacienti_consultatii=[];
     if(!empty($consultatii)){
         $ids_consultatii=implode(',', array_keys($consultatii));
@@ -39,7 +39,7 @@
                 P.Numele,
                 P.Prenumele
             FROM consultatie AS C   JOIN testare_pacient AS TP ON C.ID_Testare=TP.ID_Testare
-                                    JOIN pacienti AS P ON TP.ID_Pacient = P.ID_Pacient
+                                    JOIN pacienti AS P ON TP.ID_Pacient=P.ID_Pacient
             WHERE C.ID_Consultatie IN ($ids_consultatii)";
         $stmt_pacienti=$conexiune_bd->prepare($query_pacienti);
         $stmt_pacienti->execute();
@@ -85,6 +85,7 @@
             <thead>
                 <tr>
                     <th>Data Consultației</th>
+                    <th>Observații</th>
                     <th>Data Înrolării</th>
                     <th>Statusul</th>
                     <th>Nume Pacient</th>
@@ -98,6 +99,7 @@
                         <?php foreach($pacienti_consultatii[$id_consultatie] as $pacient): ?>
                             <tr>
                                 <td><?= htmlspecialchars($consultatie['DataConsultatie']) ?></td>
+                                <td><?= htmlspecialchars($consultatie['Observatii']) ?></td>
                                 <td><?= htmlspecialchars($pacient['DataInrolarii']) ?></td>
                                 <td><?= htmlspecialchars($pacient['Statusul']) ?></td>
                                 <td><?= htmlspecialchars($pacient['Numele']) ?></td>
@@ -141,8 +143,8 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td><?= htmlspecialchars($consultatie['ID_Consultatie']) ?></td>
                             <td><?= htmlspecialchars($consultatie['DataConsultatie']) ?></td>
+                            <td><?= htmlspecialchars($consultatie['Observatii']) ?></td>
                             <td colspan="4" class="text-center">Nu există pacienți înregistrați</td>
                             <td>
                                 <button 

@@ -1,9 +1,37 @@
 <?php
+    include_once "tools/db.php";
     session_start();
     $autentificat=false;
     if(isset($_SESSION["Email"])){
         $autentificat=true;
-  }
+    }
+    $medic_inrolat=false;
+    $pacient_inrolat=false;
+    $Email_Utilizator=$_SESSION['Email'] ?? null;
+
+    if($Email_Utilizator){
+        $conexiune_bd=getDatabaseConnection();
+        $stmt=$conexiune_bd->prepare("SELECT COUNT(*) FROM pacienti WHERE Emailul=?");
+        $stmt->bind_param("s", $Email_Utilizator);
+        $stmt->execute();
+        $stmt->bind_result($numar_pacienti);
+        $stmt->fetch();
+        $stmt->close();
+
+        $pacient_inrolat=$numar_pacienti>0;
+    }
+
+    if($Email_Utilizator){
+        $conexiune_bd=getDatabaseConnection();
+        $stmt=$conexiune_bd->prepare("SELECT COUNT(*) FROM doctor WHERE Emailul=?");
+        $stmt->bind_param("s", $Email_Utilizator);
+        $stmt->execute();
+        $stmt->bind_result($numar_doctori);
+        $stmt->fetch();
+        $stmt->close();
+
+        $medic_inrolat=$numar_doctori>0;
+    }
 ?>
 
 <!doctype html>
@@ -68,28 +96,38 @@
                  Acțiuni Pacient
               </a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="/inscriere_pacient.php">Înrolează-te ca pacient</a></li>
-                <li><a class="dropdown-item" href="/inscriere_testare.php">Adaugă o testare</a></li>
-                <li><a class="dropdown-item" href="/inscriere_testare_medicament.php">Adaugă un medicament testat</a></li>
-                <li><a class="dropdown-item" href="/vizualizare_testari.php">Vezi testările tale</a></li>
-                <li><a class="dropdown-item" href="/vizualizare_medicamente.php">Vezi medicamentele testate</a></li>
-                <li><a class="dropdown-item" href="/informatii_despre_medici.php">Vezi informații despre medicii</a></li>
+                <?php if($pacient_inrolat){ ?>
+                  <li><a class="dropdown-item" href="/inscriere_pacient.php">Înrolează-te ca pacient</a></li>
+                  <li><a class="dropdown-item" href="/inscriere_testare.php">Adaugă o testare</a></li>
+                  <li><a class="dropdown-item" href="/inscriere_testare_medicament.php">Adaugă un medicament testat</a></li>
+                  <li><a class="dropdown-item" href="/vizualizare_testari.php">Vezi testările tale</a></li>
+                  <li><a class="dropdown-item" href="/vizualizare_medicamente.php">Vezi medicamentele testate</a></li>
+                  <li><a class="dropdown-item" href="/informatii_despre_medici.php">Vezi informații despre medicii</a></li>
+                <?php } else{ ?>
+                  <li><a class="dropdown-item" href="/inscriere_pacient.php">Înrolează-te ca pacient</a></li>
+                  <li><a class="dropdown-item" href="/informatii_despre_medici.php">Vezi informații despre medicii</a></li>
+                <?php } ?>
               </ul>
-          </div>
-          <?php } elseif($_SESSION["Rol"]==='Medic'){ ?>
+            </div>
+          <?php } elseif($_SESSION["Rol"] === 'Medic'){ ?>
             <div class="nav-item dropdown ms-2">
               <a class="btn btn-outline-success dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Acțiuni Medic
               </a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="/inscriere_medic.php">Alătură-te medicilor din testări</a></li>
-                <li><a class="dropdown-item" href="/inrolare_medic_la_studiu.php">Înrolează-te la studii</a></li>
-                <li><a class="dropdown-item" href="/adaugare_consultatie.php">Adaugă o nouă consultație</a></li>
-                <li><a class="dropdown-item" href="/adaugare_categorie.php">Adaugă o nouă categorie</a></li>
-                <li><a class="dropdown-item" href="/adaugare_medicament.php">Adaugă un nou medicament</a></li>
-                <li><a class="dropdown-item" href="/vizualizare_consultatii.php">Vezi consultațiile tale</a></li>
-                <li><a class="dropdown-item" href="/vizualizare_studii.php">Vezi studiile tale</a></li>
-                <li><a class="dropdown-item" href="/echipa_medici.php">Vezi echipa de medici a testării</a></li>
+                <?php if($medic_inrolat){ ?>
+                  <li><a class="dropdown-item" href="/inscriere_medic.php">Alătură-te medicilor din testări</a></li>
+                  <li><a class="dropdown-item" href="/inrolare_medic_la_studiu.php">Înrolează-te la studii</a></li>
+                  <li><a class="dropdown-item" href="/adaugare_consultatie.php">Adaugă o nouă consultație</a></li>
+                  <li><a class="dropdown-item" href="/adaugare_categorie.php">Adaugă o nouă categorie</a></li>
+                  <li><a class="dropdown-item" href="/adaugare_medicament.php">Adaugă un nou medicament</a></li>
+                  <li><a class="dropdown-item" href="/vizualizare_consultatii.php">Vezi consultațiile tale</a></li>
+                  <li><a class="dropdown-item" href="/vizualizare_studii.php">Vezi studiile tale</a></li>
+                  <li><a class="dropdown-item" href="/echipa_medici.php">Vezi echipa de medici a testării</a></li>
+                <?php } else{ ?>
+                  <li><a class="dropdown-item" href="/inscriere_medic.php">Alătură-te medicilor</a></li>
+                  <li><a class="dropdown-item" href="/echipa_medici.php">Vezi echipa de medici a testării</a></li>
+                <?php } ?>
               </ul>
             </div>
           <?php } ?>

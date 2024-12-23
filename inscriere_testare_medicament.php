@@ -1,6 +1,5 @@
 <?php
     include "layout/header.php";
-    include "tools/db.php";
 
     $conexiune_bd = getDatabaseConnection();
 
@@ -111,7 +110,7 @@
             <label class="form-label">Data Finalizare</label>
             <input type="date" class="form-control" name="DataFinalizare" required>
         </div>
-        <button type="submit" class="btn btn-success">Înscrie-te!</button>
+        <button type="submit" class="btn btn-success">Adaugă medicamentul!</button>
     </form>
 </div>
 

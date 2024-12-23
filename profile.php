@@ -6,8 +6,6 @@
         exit;
     }
 
-    include "tools/db.php";
-
     // Vom face o mapare între câmpurile din tabela utilizator și câmpurile din tabela pacienti
     $campuri_pacienti = [
         "Nume" => "Numele",

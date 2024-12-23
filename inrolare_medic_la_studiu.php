@@ -1,6 +1,5 @@
 <?php
     include "layout/header.php";
-    include "tools/db.php";
 
     $conexiune_bd=getDatabaseConnection();
 
@@ -98,7 +97,7 @@
             <label class="form-label">Rolul în cadrul studiului</label>
             <input type="text" class="form-control" name="Rolul" required>
         </div>
-        <button type="submit" class="btn btn-success">Înscrie-te!</button>
+        <button type="submit" class="btn btn-success">Înscrie-te la studiu!</button>
     </form>
 </div>
 

@@ -3,6 +3,22 @@
     echo '<script src="tranzitie.js"></script>';
     echo '<link rel="stylesheet" type="text/css" href="stilizare_tranzitii.css">';
     echo '<link rel="stylesheet" type="text/css" href="stilizare_div_pagini_index.css">';
+
+    $Email_Utilizator=$_SESSION['Email'] ?? null;
+    $este_inrolat=false;
+    if($Email_Utilizator){
+        $conexiune_bd=getDatabaseConnection();
+        $stmt=$conexiune_bd->prepare("SELECT COUNT(*) FROM pacienti WHERE Emailul=?");
+        $stmt->bind_param("s", $Email_Utilizator);
+        $stmt->execute();
+        $stmt->bind_result($numar_pacienti);
+        $stmt->fetch();
+        $stmt->close();
+
+        $este_inrolat=$numar_pacienti>0;
+    } else{
+        echo "<p class='text-danger'>Email-ul utilizatorului nu este setat în sesiune!</p>";
+    }
 ?>
 
 <div class="slide show" style="background-color: #08618d">
@@ -51,9 +67,11 @@
                     Explorați istoricul testărilor dumneavoastră medicale într-un mod simplu și intuitiv.
                     Accesați rapid detalii despre întâlnirile cu medicii, recomandările primite și diagnosticele înregistrate.
                 </p>
-                <a href="vizualizare_testari.php" class="btn btn-primary btn-lg mt-3">
-                    Vizualizați
-                </a>
+                <?php if($este_inrolat): ?>
+                    <a href="vizualizare_testari.php" class="btn btn-primary btn-lg">Vizualizați</a>
+                <?php else: ?>
+                    <p class="text-warning">Nu sunteți înrolat în cadrul evidenței de testare. Nu puteți accesa această pagină.</p>
+                <?php endif; ?>
             </div>
             <div class="col-md-6 text-center">
                 <img src="/images/Testare_pacient.png" class="img-fluid" alt="hero" />
@@ -71,9 +89,11 @@
                     Accesați rapid informații detaliate despre medicamentele testate în cadrul studiilor clinice.
                     Analizați istoricul tratamentelor și observați progresul pentru a înțelege mai bine impactul acestora asupra sănătății dumneavoastră.
                 </p>
-                <a href="vizualizare_medicamente.php" class="btn btn-primary btn-lg mt-3">
-                    Vizualizați
-                </a>
+                <?php if($este_inrolat): ?>
+                    <a href="vizualizare_medicamente.php" class="btn btn-primary btn-lg">Vizualizați</a>
+                <?php else: ?>
+                    <p class="text-warning">Nu sunteți înrolat în cadrul evidenței de testare. Nu puteți accesa această pagină.</p>
+                <?php endif; ?>
             </div>
             <div class="col-md-6 text-center">
                 <img src="/images/Medicamente.png" class="img-fluid" alt="hero" />

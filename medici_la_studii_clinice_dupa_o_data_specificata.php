@@ -1,6 +1,5 @@
 <?php
     include "layout/header.php";
-    include "tools/db.php";
 
     $conexiune_bd=getDatabaseConnection();
     $studii_medici=[];

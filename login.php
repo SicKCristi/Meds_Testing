@@ -2,9 +2,9 @@
    include "layout/header.php";
    
    if(isset($_SESSION["Email"])){
-        if ($user['rol']==='Pacient'){
+        if($user['rol']==='Pacient'){
             header("Location: index_pacient.php");
-        } elseif($user['rol']==='Medic'){
+        }elseif($user['rol']==='Medic'){
         header("Location: index_medic.php");
     }
     exit;
@@ -20,7 +20,6 @@
     if(empty($Email) || empty($Parola)){
         $eroare="Emailul și parola sunt necesare!";
     } else{
-        include "tools/db.php";
         $conexiune_bd=getDatabaseConnection();
         $statement=$conexiune_bd->prepare("SELECT ID_Utilizator, Nume, Prenume, Telefon, Adresa, Rol, Parola FROM utilizator WHERE email=?");
         $statement->bind_param('s', $Email);

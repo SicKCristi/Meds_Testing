@@ -2,7 +2,6 @@
 include "layout/header.php";
 
 if($_SERVER['REQUEST_METHOD']==='POST'){
-    include "tools/db.php";
     include "functii_stergere_pacient.php";
 
     $conexiune_bd=getDatabaseConnection();

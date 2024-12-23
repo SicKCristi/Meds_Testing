@@ -2,7 +2,6 @@
 include "layout/header.php";
 
 if($_SERVER['REQUEST_METHOD']==='POST'){
-    include "tools/db.php";
 
     $conexiune_bd=getDatabaseConnection();
 
