@@ -3,7 +3,8 @@
 
     $conexiune_bd=getDatabaseConnection();
 
-    // Interogarea 1: Lista medicilor cu numărul de consultații
+    // Interogarea 1: Lista medicilor cu numărul de consultații și procentul pe care îl au consultațiile
+    // fiecărui medic din totalul de consultații
     // Interogare complexă cu subcerere (#1)
     $query1="
         SELECT 
@@ -11,10 +12,15 @@
             D.PrenumeDoctor,
             D.Specializarea,
             D.Spitalul,
-                (SELECT COUNT(DISTINCT C.ID_Consultatie) 
-                FROM consultatie C
-                WHERE C.ID_Doctor=D.ID_Doctor) AS NumarPacienti
-        FROM doctor D;";
+                        (SELECT COUNT(DISTINCT C.ID_Consultatie) 
+                        FROM consultatie C
+                        WHERE C.ID_Doctor=D.ID_Doctor) AS NumarConsultatii,
+            ROUND(
+                    (SELECT COUNT(DISTINCT C.ID_Consultatie)
+                    FROM consultatie C
+                    WHERE C.ID_Doctor=D.ID_Doctor)*100.0/(SELECT COUNT(*) FROM consultatie),2) AS ProcentajConsultatii
+        FROM doctor D
+        ORDER BY NumarConsultatii DESC; ";
 
     $rezultat1=$conexiune_bd->query($query1);
     $medici_consultatii=$rezultat1->fetch_all(MYSQLI_ASSOC);
@@ -24,7 +30,7 @@
     <h2>Lista medicilor și numărul de consultații pentru fiecare</h2>
 
     <!-- Butonul care face legătura cu pagina echipa_medici.php -->
-    <div class="mt-4 mb-3" >
+    <div class="mt-4 mb-3">
         <a href="echipa_medici.php" class="btn btn-primary">Înapoi pe pagina echipei de medici</a>
     </div>
 
@@ -36,6 +42,7 @@
                 <th>Specializarea</th>
                 <th>Spital</th>
                 <th>Număr Consultații</th>
+                <th>Procentaj Consultații (%)</th>
             </tr>
         </thead>
         <tbody>
@@ -45,7 +52,8 @@
                     <td><?= htmlspecialchars($medic['PrenumeDoctor']) ?></td>
                     <td><?= htmlspecialchars($medic['Specializarea']) ?></td>
                     <td><?= htmlspecialchars($medic['Spitalul']) ?></td>
-                    <td><?= htmlspecialchars($medic['NumarPacienti']) ?></td>
+                    <td><?= htmlspecialchars($medic['NumarConsultatii']) ?></td>
+                    <td><?= htmlspecialchars($medic['ProcentajConsultatii']) ?>%</td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

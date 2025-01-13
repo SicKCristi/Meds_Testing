@@ -80,6 +80,7 @@
             <li><a class="dropdown-item" href="medici_la_studii_clinice_dupa_o_data_specificata.php">Medici la studii clinice după o dată</a></li>
             <li><a class="dropdown-item" href="medici_cu_studii_cu_medicamente_produse_de_un_anumit_producator.php">Medici la studii cu medicamente produse de un producător</a></li>
             <li><a class="dropdown-item" href="medicii_cu_cele_mai_multe_consultatii.php">Medicii cu cele mai multe consultații</a></li>
+            <li><a class="dropdown-item" href="procentaj_studii_per_medic.php">Procentajul studiilor unui medic din studiile totale</a></li>
         </ul>
     </div>
 

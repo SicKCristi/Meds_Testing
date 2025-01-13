@@ -9,18 +9,20 @@
         // Interogarea 2: Medicii care au participat la studii cu medicamente aprobate după un an dat
         // Interogare complexă cu subcerere (#2)
         $query2="
-            SELECT 
-                D.NumeDoctor,
-                D.PrenumeDoctor,
-                D.Specializarea,
-                D.Spitalul
-            FROM doctor AS D
-            WHERE D.ID_Doctor IN (
-                                    SELECT SD.ID_Doctor
-                                    FROM studiu_doctor AS SD
-                                    JOIN studiu_clinic AS SC ON SD.ID_Studiu=SC.ID_Studiu
-                                    JOIN medicamente AS M ON SC.ID_Medicament=M.ID_Medicament
-                                    WHERE M.DataAprobarii>'$an_minim-01-01');";
+        SELECT 
+            D.NumeDoctor,
+            D.PrenumeDoctor,
+            D.Specializarea,
+            D.Spitalul
+        FROM doctor AS D
+        WHERE EXISTS (
+                        SELECT 1
+                        FROM studiu_doctor AS SD    
+                        JOIN studiu_clinic AS SC ON SD.ID_Studiu=SC.ID_Studiu
+                        JOIN medicamente AS M ON SC.ID_Medicament=M.ID_Medicament
+        WHERE SD.ID_Doctor=D.ID_Doctor
+          AND M.DataAprobarii>'$an_minim-01-01'
+    );";
 
         $rezultat2=$conexiune_bd->query($query2);
         $medici_medicamente=$rezultat2->fetch_all(MYSQLI_ASSOC);

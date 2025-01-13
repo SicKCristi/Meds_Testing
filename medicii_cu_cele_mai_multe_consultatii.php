@@ -12,17 +12,17 @@
             D.Specializarea,
             D.Spitalul
         FROM doctor AS D
-        WHERE D.ID_Doctor IN (
-                                SELECT C.ID_Doctor
-                                FROM consultatie AS C
-                                GROUP BY C.ID_Doctor
-                                HAVING COUNT(C.ID_Consultatie) = (
+        WHERE D.ID_Doctor NOT IN (
+                                    SELECT C.ID_Doctor
+                                    FROM consultatie AS C
+                                    GROUP BY C.ID_Doctor
+                                    HAVING COUNT(C.ID_Consultatie)<(
                                                                     SELECT MAX(NumarConsultatii)
                                                                     FROM (
                                                                             SELECT COUNT(C2.ID_Consultatie) AS NumarConsultatii
                                                                             FROM consultatie AS C2
                                                                             GROUP BY C2.ID_Doctor
-                                                                        ) AS Subquery));";
+                                                                    ) AS Subquery));";
 
     $rezultat_consultatii=$conexiune_bd->query($query_consultatii);
     $medici_consultatii=$rezultat_consultatii->fetch_all(MYSQLI_ASSOC);
